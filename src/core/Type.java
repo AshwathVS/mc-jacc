@@ -109,6 +109,7 @@ public enum Type {
     HYPHEN,
     HASH_TAG,
     WHITE_SPACE,
+    EOF,
 
     /**
      * L/R Value

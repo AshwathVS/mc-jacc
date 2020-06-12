@@ -8,7 +8,7 @@ import core.Token;
 %line
 %column
 %type core.Token
-%function nextToken
+%function next
 %state COMMENT
 %public
 
@@ -308,9 +308,13 @@ do
 {
     return new Token(Type.HASH_TAG);
 }
-[\t\r\n\f\s]+
+[\t\r\f\s]+
 {
     return new Token(Type.WHITE_SPACE);
+}
+[\n]
+{
+    return new Token(Type.EOF);
 }
 
 /*Left value and right value*/
