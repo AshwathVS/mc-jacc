@@ -1,5 +1,7 @@
 package parser.numerics;
 
+import core.Token;
+import core.Type;
 import lexer.LexerWrapper;
 import parser.Parser;
 
@@ -15,17 +17,29 @@ public class NumericParser extends Parser {
 
     @Override
     public NumericExpressionNode parse() {
-        return null;
+        return parseExpression();
     }
 
     private NumericExpressionNode parseExpression() {
-        NumericExpressionNode term = parseTerm();
-        if() {
-
-        }
+        NumericExpressionNode left = null, right = null;
+        left = parseTerm();
+        Token token = lexerWrapper.match(Type.ADD, Type.SUBTRACT);
+        if(null != token) right = parseExpression();
+        return new NumericExpressionNode(token.getType(), left, right);
     }
 
     private NumericExpressionNode parseTerm() {
+        NumericExpressionNode left = null, right = null;
+        left = parseNumber();
+        Token token = lexerWrapper.match(Type.MULTIPLY, Type.DIVIDE);
+        if(null != token) right = parseTerm();
+        return new NumericExpressionNode(token.getType(), left, right);
+    }
 
+    private NumericNode parseNumber() {
+        Token token = lexerWrapper.match(Type.NUMBER);
+        if(null != token) {
+            return new NumericNode(Double.parseDouble(token.getValue()));
+        } else return null;
     }
 }

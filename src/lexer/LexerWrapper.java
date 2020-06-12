@@ -26,9 +26,14 @@ public class LexerWrapper {
         return tokenList.peek();
     }
 
-    public Token match(Type type) {
-        if(null != peek() && peek().getType().equals(type)) return nextToken();
-        else return null;
+    public Token match(Type... types) {
+        Token front = peek();
+        if(null != front) {
+            for(Type type : types) {
+                if(front.getType().equals(type)) return nextToken();
+            }
+        }
+        return null;
     }
 
     public Token nextToken() {
