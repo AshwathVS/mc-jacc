@@ -18,7 +18,8 @@ public class LexerWrapper {
         Lexer lexer = new Lexer(in);
         tokenList = new ArrayDeque<>(500);
         while(!lexer.yyatEOF()) {
-            tokenList.add(lexer.next());
+            Token token = lexer.next();
+            if(null != token) tokenList.add(token);
         }
     }
 

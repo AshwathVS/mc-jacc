@@ -21,19 +21,22 @@ public class NumericParser extends Parser {
     }
 
     private NumericExpressionNode parseExpression() {
-        NumericExpressionNode left = null, right = null;
-        left = parseTerm();
+        NumericExpressionNode left = parseTerm(), right = null;
         Token token = lexerWrapper.match(Type.ADD, Type.SUBTRACT);
-        if(null != token) right = parseExpression();
-        return new NumericExpressionNode(token.getType(), left, right);
+        if(null != token) {
+            right = parseExpression();
+            return new NumericExpressionNode(token.getType(), left, right);
+        }
+        else return left;
     }
 
     private NumericExpressionNode parseTerm() {
-        NumericExpressionNode left = null, right = null;
-        left = parseNumber();
+        NumericExpressionNode left = parseNumber(), right = null;
         Token token = lexerWrapper.match(Type.MULTIPLY, Type.DIVIDE);
-        if(null != token) right = parseTerm();
-        return new NumericExpressionNode(token.getType(), left, right);
+        if(null != token) {
+            right = parseTerm();
+            return new NumericExpressionNode(token.getType(), left, right);
+        } else return left;
     }
 
     private NumericNode parseNumber() {
