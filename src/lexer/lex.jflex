@@ -308,11 +308,11 @@ do
 {
     return new Token(Type.HASH_TAG);
 }
-[\t\r\f\s]+
+[\t\r\n\f\s]+
 {
     return new Token(Type.WHITE_SPACE);
 }
-[\n]
+[$]
 {
     return new Token(Type.EOF);
 }

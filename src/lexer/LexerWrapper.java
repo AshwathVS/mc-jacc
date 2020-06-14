@@ -12,6 +12,7 @@ import java.util.Deque;
  * Wrapper over the auto-generated Lexer class
  */
 public class LexerWrapper {
+
     Deque<Token> tokenList;
 
     public LexerWrapper(Reader in) throws IOException {
@@ -27,14 +28,14 @@ public class LexerWrapper {
         return tokenList.peek();
     }
 
-    public Token match(Type... types) {
+    public boolean match(Type... types) {
         Token front = peek();
         if(null != front) {
             for(Type type : types) {
-                if(front.getType().equals(type)) return nextToken();
+                if(front.getType().equals(type)) return true;
             }
         }
-        return null;
+        return false;
     }
 
     public Token nextToken() {

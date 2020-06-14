@@ -1,12 +1,12 @@
 package parser.numerics;
 
-import core.Token;
+import core.ParseTreePrinter;
 import core.Type;
 
 /**
  * Operator will be null and the value will be filled for leaf nodes and vice versa parent nodes.
  */
-public class NumericExpressionNode {
+public class NumericExpressionNode implements ParseTreePrinter<NumericExpressionNode> {
 
     private Type operator;
 
@@ -41,4 +41,22 @@ public class NumericExpressionNode {
         return null;
     }
 
+    @Override
+    public String getValue() {
+        return operator.toString();
+    }
+
+    @Override
+    public NumericExpressionNode getLeft() {
+        return this.left;
+    }
+
+    @Override
+    public NumericExpressionNode getRight() {
+        return this.right;
+    }
+
+    public Type getOperator() {
+        return this.operator;
+    }
 }

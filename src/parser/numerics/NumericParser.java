@@ -7,10 +7,12 @@ import parser.Parser;
 
 /**
  * Grammar followed is as follows:
- * E -> T | T + E | T - E
- * T -> int | int * T | int / T
+ * E -> T | T + T | T - T
+ * T -> F | F * F | F / F
+ * F -> INT | (E)
  */
 public class NumericParser extends Parser {
+
     public NumericParser(LexerWrapper lexerWrapper) {
         super(lexerWrapper);
     }
@@ -20,29 +22,37 @@ public class NumericParser extends Parser {
         return parseExpression();
     }
 
-    private NumericExpressionNode parseExpression() {
-        NumericExpressionNode left = parseTerm(), right = null;
-        Token token = lexerWrapper.match(Type.ADD, Type.SUBTRACT);
-        if(null != token) {
-            right = parseExpression();
-            return new NumericExpressionNode(token.getType(), left, right);
+    public NumericExpressionNode parseExpression() {
+        NumericExpressionNode left = parseTerm();
+        while(lexerWrapper.match(Type.ADD, Type.SUBTRACT)) {
+            Token operator = lexerWrapper.nextToken();
+            NumericExpressionNode right = parseTerm();
+            left = new NumericExpressionNode(operator.getType(), left, right);
         }
-        else return left;
+        return left;
     }
 
-    private NumericExpressionNode parseTerm() {
-        NumericExpressionNode left = parseNumber(), right = null;
-        Token token = lexerWrapper.match(Type.MULTIPLY, Type.DIVIDE);
-        if(null != token) {
-            right = parseTerm();
-            return new NumericExpressionNode(token.getType(), left, right);
-        } else return left;
+    public NumericExpressionNode parseTerm() {
+        NumericExpressionNode left = parseFactor();
+        while(lexerWrapper.match(Type.MULTIPLY, Type.DIVIDE)) {
+            Token operator = lexerWrapper.nextToken();
+            NumericExpressionNode right = parseFactor();
+            left = new NumericExpressionNode(operator.getType(), left, right);
+        }
+        return left;
     }
 
-    private NumericNode parseNumber() {
-        Token token = lexerWrapper.match(Type.NUMBER);
-        if(null != token) {
-            return new NumericNode(Double.parseDouble(token.getValue()));
-        } else return null;
+    public NumericExpressionNode parseFactor() {
+        if(lexerWrapper.match(Type.OPEN_BRACKET)) {
+            Token openBracket = lexerWrapper.nextToken();
+            NumericExpressionNode expressionNode = parseExpression();
+            if(lexerWrapper.match(Type.CLOSE_BRACKET)) {
+                // Todo: Throw exception
+            }
+            Token closeBracket = lexerWrapper.nextToken();
+            return expressionNode;
+        } else if (lexerWrapper.match(Type.NUMBER)) {
+            return new NumericNode(Double.parseDouble(lexerWrapper.nextToken().getValue()));
+        } else return null; // TODO: Throw exception
     }
 }

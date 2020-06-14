@@ -12,4 +12,9 @@ public class NumericNode extends NumericExpressionNode {
     public Number evaluate() {
         return this.value;
     }
+
+    @Override
+    public String getValue() {
+        return value.toString();
+    }
 }
