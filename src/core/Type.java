@@ -19,9 +19,12 @@ public enum Type {
     MULTIPLY,
     DIVIDE,
     MODULUS,
+
+    /**
+     * Increment and Decrement Operators:
+     */
     INCREMENT,
     DECREMENT,
-
 
     /**
      * Relational Operators:

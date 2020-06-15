@@ -1,7 +1,9 @@
 package parser;
 
-import core.ParseTreePrinter;
 import lexer.LexerWrapper;
+import parser.common.ParseTreePrinter;
+
+import java.util.List;
 
 public class Parser {
 
@@ -28,7 +30,8 @@ public class Parser {
         }
         System.out.print("__ ");
         System.out.println(parseTreePrinter.getValue());
-        printParseTree(parseTreePrinter.getLeft(), tabSpace + 1);
-        printParseTree(parseTreePrinter.getRight(), tabSpace + 1);
+        for(ParseTreePrinter child : (List<ParseTreePrinter>)parseTreePrinter.getChildren()) {
+            printParseTree(child, tabSpace + 1);
+        }
     }
 }

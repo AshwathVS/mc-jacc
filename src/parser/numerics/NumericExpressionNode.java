@@ -1,7 +1,10 @@
 package parser.numerics;
 
-import core.ParseTreePrinter;
+import parser.common.ParseTreePrinter;
 import core.Type;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Operator will be null and the value will be filled for leaf nodes and vice versa parent nodes.
@@ -47,13 +50,8 @@ public class NumericExpressionNode implements ParseTreePrinter<NumericExpression
     }
 
     @Override
-    public NumericExpressionNode getLeft() {
-        return this.left;
-    }
-
-    @Override
-    public NumericExpressionNode getRight() {
-        return this.right;
+    public List<NumericExpressionNode> getChildren() {
+        return Arrays.asList(this.left, this.right);
     }
 
     public Type getOperator() {
