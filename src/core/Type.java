@@ -9,7 +9,6 @@ public enum Type {
     CHARACTER,
     BOOLEAN,
     STRING,
-    ENUM,
 
     /**
      * Arithmetic Operators:
@@ -118,7 +117,14 @@ public enum Type {
      * L/R Value
      */
     ID,
-    NUMBER,
-    TEXT,
+    INTEGER_LITERAL,
+    STRING_LITERAL,
+    CHARACTER_LITERAL,
+    BOOLEAN_LITERAL,
+    DOUBLE_LITERAL,;
+
+    public static Type[] getDataTypeOperators() {
+        return new Type[] {INTEGER, DOUBLE, CHARACTER, STRING, BOOLEAN};
+    }
 
 };

@@ -1,7 +1,6 @@
 package parser;
 
 import lexer.LexerWrapper;
-import parser.common.ParseTreePrinter;
 
 import java.util.List;
 

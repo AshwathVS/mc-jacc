@@ -1,6 +1,6 @@
 package parser.numerics;
 
-import parser.common.ParseTreePrinter;
+import parser.ParseTreePrinter;
 import core.Type;
 
 import java.util.Arrays;

@@ -12,8 +12,11 @@ import core.Token;
 %state COMMENT
 %public
 
-number=[0-9]*(\.[0-9]+)?((e|E)[-+]?[0-9]+)?
+int_number=[0-9]*((e|E)[-+]?[0-9]+)?
+double_number=[0-9]*(\.[0-9]+)+((e|E)[-+]?[0-9]+)?
 text=\"([^\"\\]|\\.)*\"
+character=\'.\'
+boolean=true|false
 id=[a-zA-Z_]([a-zA-Z_]|[0-9])*
 %%
 
@@ -32,9 +35,6 @@ bool\s {
 }
 string\s {
     return new Token(Type.STRING);
-}
-enum\s {
-    return new Token(Type.ENUM);
 }
 
 
@@ -318,14 +318,28 @@ do
 }
 
 /*Left value and right value*/
+
+{boolean} {
+    return new Token(Type.BOOLEAN_LITERAL, yytext());
+}
+
 {id} {
     return new Token(Type.ID, yytext());
 }
 
-{number} {
-    return new Token(Type.NUMBER, yytext());
+{double_number} {
+    return new Token(Type.DOUBLE_LITERAL, yytext());
+}
+
+{int_number} {
+    return new Token(Type.INTEGER_LITERAL, yytext());
 }
 
 {text} {
-    return new Token(Type.TEXT, yytext());
+    return new Token(Type.STRING_LITERAL, yytext());
 }
+
+{character} {
+    return new Token(Type.CHARACTER_LITERAL, yytext());
+}
+

@@ -25,6 +25,7 @@ public class LexerWrapper {
             Token token = lexer.next();
             if(null != token) tokenList.add(token);
         }
+        tokenList.add(new Token(Type.EOF));
 
         history = new Stack<>();
     }

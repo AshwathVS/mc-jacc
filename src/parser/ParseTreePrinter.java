@@ -1,9 +1,9 @@
-package parser.common;
+package parser;
 
 import java.util.List;
 
 public interface ParseTreePrinter<T extends ParseTreePrinter> {
-    String getValue();
+    Object getValue();
 
     List<T> getChildren();
 }

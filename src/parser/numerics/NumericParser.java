@@ -51,7 +51,7 @@ public class NumericParser extends Parser {
             }
             Token closeBracket = lexerWrapper.nextToken();
             return expressionNode;
-        } else if (lexerWrapper.match(Type.NUMBER)) {
+        } else if (lexerWrapper.match(Type.INTEGER_LITERAL, Type.DOUBLE_LITERAL)) {
             return new NumericNode(Double.parseDouble(lexerWrapper.nextToken().getValue()));
         } else return null; // TODO: Throw exception
     }
