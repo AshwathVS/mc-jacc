@@ -1,15 +1,15 @@
 package parser.controlAndLoopStatements;
 
 import parser.BlockNode;
-import parser.RhsValueNode;
+import parser.GenericExpressionNode;
 import parser.StatementNode;
 
 public abstract class BaseControlStatement implements StatementNode {
     private BlockNode blockNode;
 
-    private RhsValueNode conditionStatement;
+    private GenericExpressionNode conditionStatement;
 
-    public BaseControlStatement(BlockNode blockNode, RhsValueNode conditionStatement) {
+    public BaseControlStatement(BlockNode blockNode, GenericExpressionNode conditionStatement) {
         this.blockNode = blockNode;
         this.conditionStatement = conditionStatement;
     }
@@ -22,11 +22,11 @@ public abstract class BaseControlStatement implements StatementNode {
         this.blockNode = blockNode;
     }
 
-    public RhsValueNode getConditionStatement() {
+    public GenericExpressionNode getConditionStatement() {
         return conditionStatement;
     }
 
-    public void setConditionStatement(RhsValueNode conditionStatement) {
+    public void setConditionStatement(GenericExpressionNode conditionStatement) {
         this.conditionStatement = conditionStatement;
     }
 }

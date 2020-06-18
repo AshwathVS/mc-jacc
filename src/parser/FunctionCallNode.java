@@ -2,7 +2,7 @@ package parser;
 
 import java.util.List;
 
-public class FunctionCallNode implements RhsValueNode, StatementNode {
+public class FunctionCallNode implements GenericExpressionNode, StatementNode {
     String functionName;
     List<IdentifierNode> argumentsUsed;
 

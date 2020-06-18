@@ -2,7 +2,7 @@ package parser;
 
 import parser.symbolTable.VariableSymbolTableEntry;
 
-public class IdentifierNode implements RhsValueNode, StatementNode {
+public class IdentifierNode implements GenericExpressionNode, StatementNode {
     private DataType dataType;
     private String identifierName;
     private Integer symbolTableId;

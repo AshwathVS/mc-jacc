@@ -6,12 +6,12 @@ package parser;
  * T -> F | F * F | F / F
  * F -> ID | LITERAL | FUNCTION_CALL | (E)
  */
-public class BinaryExpressionNode implements RhsValueNode, StatementNode {
-    private RhsValueNode left, right;
+public class BinaryExpressionNode implements GenericExpressionNode, StatementNode {
+    private GenericExpressionNode left, right;
 
     private Operator operator;
 
-    public BinaryExpressionNode(RhsValueNode left, RhsValueNode right, Operator operator) {
+    public BinaryExpressionNode(GenericExpressionNode left, GenericExpressionNode right, Operator operator) {
         this.left = left;
         this.right = right;
         this.operator = operator;
@@ -27,11 +27,11 @@ public class BinaryExpressionNode implements RhsValueNode, StatementNode {
         return StatementType.EXPRESSION;
     }
 
-    public RhsValueNode getLeft() {
+    public GenericExpressionNode getLeft() {
         return left;
     }
 
-    public RhsValueNode getRight() {
+    public GenericExpressionNode getRight() {
         return right;
     }
 

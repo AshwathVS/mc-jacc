@@ -1,11 +1,11 @@
 package parser.literal;
 
 import core.Token;
-import parser.RhsValueNode;
+import parser.GenericExpressionNode;
 import parser.RhsValueType;
 import parser.StatementType;
 
-public abstract class Literal<T> implements RhsValueNode {
+public abstract class Literal<T> implements GenericExpressionNode {
 
     public abstract LiteralType getLiteralType();
 

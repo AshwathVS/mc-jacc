@@ -2,9 +2,9 @@ package parser;
 
 public class VariableDeclarationNode implements StatementNode {
     private IdentifierNode lhs;
-    private RhsValueNode rhs;
+    private GenericExpressionNode rhs;
 
-    public VariableDeclarationNode(IdentifierNode lhs, RhsValueNode rhs) {
+    public VariableDeclarationNode(IdentifierNode lhs, GenericExpressionNode rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
     }
@@ -13,7 +13,7 @@ public class VariableDeclarationNode implements StatementNode {
         return lhs;
     }
 
-    public RhsValueNode getRhs() {
+    public GenericExpressionNode getRhs() {
         return rhs;
     }
 

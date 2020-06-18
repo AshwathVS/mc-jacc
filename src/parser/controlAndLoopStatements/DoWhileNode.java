@@ -1,11 +1,11 @@
 package parser.controlAndLoopStatements;
 
 import parser.BlockNode;
-import parser.RhsValueNode;
+import parser.GenericExpressionNode;
 import parser.StatementType;
 
 public class DoWhileNode extends BaseControlStatement {
-    public DoWhileNode(BlockNode blockNode, RhsValueNode conditionStatement) {
+    public DoWhileNode(BlockNode blockNode, GenericExpressionNode conditionStatement) {
         super(blockNode, conditionStatement);
     }
 

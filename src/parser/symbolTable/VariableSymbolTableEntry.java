@@ -2,15 +2,15 @@ package parser.symbolTable;
 
 import parser.DataType;
 import parser.IdentifierNode;
-import parser.RhsValueNode;
+import parser.GenericExpressionNode;
 import parser.VariableDeclarationNode;
 
 public class VariableSymbolTableEntry {
     String variableName;
     DataType dataType;
-    RhsValueNode value;
+    GenericExpressionNode value;
 
-    public VariableSymbolTableEntry(String variableName, DataType dataType, RhsValueNode value) {
+    public VariableSymbolTableEntry(String variableName, DataType dataType, GenericExpressionNode value) {
         this.variableName = variableName;
         this.dataType = dataType;
         this.value = value;

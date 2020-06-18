@@ -62,7 +62,7 @@ public class DraftParser {
             // removing equal_to token
             lexer.nextToken();
 
-            RhsValueNode rhs = parseBinaryExpression(symbolTable);
+            GenericExpressionNode rhs = parseBinaryExpression(symbolTable);
             if(rhs == null) {
                 return new VariableDeclarationNode(lhs, null);
             } else {
@@ -79,7 +79,7 @@ public class DraftParser {
         return null;
     }
 
-    private boolean validateDataTypeEquivalence(IdentifierNode lhs, RhsValueNode rhs) {
+    private boolean validateDataTypeEquivalence(IdentifierNode lhs, GenericExpressionNode rhs) {
         return false;
     }
 
@@ -129,10 +129,10 @@ public class DraftParser {
      * T -> F | F * F | F / F
      * F -> ID | LITERAL | FUNCTION_CALL | (E)
      */
-    private RhsValueNode parseBinaryExpression(SymbolTable symbolTable) {
+    private GenericExpressionNode parseBinaryExpression(SymbolTable symbolTable) {
         lexer.snapshot();
         Operator start = Operator.NULL;
-        RhsValueNode left = parseBinaryTerm(symbolTable, start.getPrecedence());
+        GenericExpressionNode left = parseBinaryTerm(symbolTable, start.getPrecedence());
         if(null == left) {
             lexer.restore();
             return left;
@@ -144,15 +144,15 @@ public class DraftParser {
         while(null != start && lexer.match(Operator.getOperatorsWithEqualPrecedence(start.getPrecedence()))) {
             Token token = lexer.nextToken();
             start = Operator.getPrecedenceForOperator(token.getType());
-            RhsValueNode right = parseBinaryTerm(symbolTable, start.getPrecedence());
+            GenericExpressionNode right = parseBinaryTerm(symbolTable, start.getPrecedence());
             left = new BinaryExpressionNode(left, right, start);
         }
         return left;
     }
 
-    private RhsValueNode parseBinaryTerm(SymbolTable symbolTable, int previousPrecedence) {
+    private GenericExpressionNode parseBinaryTerm(SymbolTable symbolTable, int previousPrecedence) {
         lexer.snapshot();
-        RhsValueNode left = parseBinaryFactor(symbolTable);
+        GenericExpressionNode left = parseBinaryFactor(symbolTable);
         if(null == left) {
             lexer.restore();
             return null;
@@ -165,19 +165,19 @@ public class DraftParser {
         while(null != start && lexer.match(Operator.getOperatorsWithEqualPrecedence(start.getPrecedence()))) {
             Token token = lexer.nextToken();
             start = Operator.getPrecedenceForOperator(token.getType());
-            RhsValueNode right = parseBinaryTerm(symbolTable, start.getPrecedence());
+            GenericExpressionNode right = parseBinaryTerm(symbolTable, start.getPrecedence());
             left = new BinaryExpressionNode(left, right, start);
         }
         return left;
     }
 
-    private RhsValueNode parseBinaryFactor(SymbolTable symbolTable) {
+    private GenericExpressionNode parseBinaryFactor(SymbolTable symbolTable) {
         lexer.snapshot();
         FunctionCallNode functionCallNode = parseFunctionCall(symbolTable);
         if(null == functionCallNode) {
             lexer.restore();
             lexer.snapshot();
-            RhsValueNode bracketedExpression = parseBracketedExpression(symbolTable);
+            GenericExpressionNode bracketedExpression = parseBracketedExpression(symbolTable);
             if(null == bracketedExpression) {
                 lexer.restore();
                 lexer.snapshot();
@@ -218,11 +218,11 @@ public class DraftParser {
         return null;
     }
 
-    private RhsValueNode parseBracketedExpression(SymbolTable symbolTable) {
+    private GenericExpressionNode parseBracketedExpression(SymbolTable symbolTable) {
         lexer.snapshot();
         if(lexer.match(Type.OPEN_BRACKET)) {
             lexer.nextToken();
-            RhsValueNode expression = parseBinaryExpression(symbolTable);
+            GenericExpressionNode expression = parseBinaryExpression(symbolTable);
             if (!lexer.match(Type.CLOSE_BRACKET)) {
                 // TODO: Throw exception (no closing bracket found)
             }
@@ -372,7 +372,7 @@ public class DraftParser {
         // expression
         lexer.restore();
         lexer.snapshot();
-        RhsValueNode binaryExpressionNode = parseBinaryExpression(symbolTable);
+        GenericExpressionNode binaryExpressionNode = parseBinaryExpression(symbolTable);
         if(null != binaryExpressionNode) {
             return binaryExpressionNode;
         }
@@ -421,12 +421,12 @@ public class DraftParser {
 
                 if(lexer.match(Type.SEMI_COLON)) {
                     lexer.nextToken();
-                    RhsValueNode conditionNode = parseBinaryExpression(symbolTable);
+                    GenericExpressionNode conditionNode = parseBinaryExpression(symbolTable);
 
 
                     if(lexer.match(Type.SEMI_COLON)) {
                         lexer.nextToken();
-                        RhsValueNode incrementNode = parseBinaryExpression(symbolTable);
+                        GenericExpressionNode incrementNode = parseBinaryExpression(symbolTable);
 
 
                         if(lexer.match(Type.CLOSE_BRACKET)) {
@@ -454,7 +454,7 @@ public class DraftParser {
             lexer.nextToken();
             if(lexer.match(Type.OPEN_BRACKET)) {
                 lexer.nextToken();
-                RhsValueNode variableDeclarationNode = parseBinaryExpression(symbolTable);
+                GenericExpressionNode variableDeclarationNode = parseBinaryExpression(symbolTable);
                 if(null != variableDeclarationNode) {
                     if(lexer.match(Type.CLOSE_BRACKET)) {
                         lexer.nextToken();
@@ -486,7 +486,7 @@ public class DraftParser {
                     lexer.nextToken();
                     if (lexer.match(Type.OPEN_BRACKET)) {
                         lexer.nextToken();
-                        RhsValueNode binaryExpression = parseBinaryExpression(symbolTable);
+                        GenericExpressionNode binaryExpression = parseBinaryExpression(symbolTable);
                         if (null != binaryExpression) {
                             if (lexer.match(Type.CLOSE_BRACKET)) {
                                 lexer.nextToken();
@@ -515,7 +515,7 @@ public class DraftParser {
             lexer.nextToken();
             if(lexer.match(Type.OPEN_BRACKET)) {
                 lexer.nextToken();
-                RhsValueNode conditionStatement = parseBinaryExpression(symbolTable);
+                GenericExpressionNode conditionStatement = parseBinaryExpression(symbolTable);
                 if(null != conditionStatement) {
                     if(lexer.match(Type.CLOSE_BRACKET)) {
                         lexer.nextToken();

@@ -5,9 +5,9 @@ import parser.*;
 public class ForNode extends BaseControlStatement {
     private VariableDeclarationNode initialisationNode;
 
-    private RhsValueNode incrementNode;
+    private GenericExpressionNode incrementNode;
 
-    public ForNode(VariableDeclarationNode initialisationNode, RhsValueNode conditionStatement, RhsValueNode incrementNode, BlockNode blockNode) {
+    public ForNode(VariableDeclarationNode initialisationNode, GenericExpressionNode conditionStatement, GenericExpressionNode incrementNode, BlockNode blockNode) {
         super(blockNode, conditionStatement);
         this.initialisationNode = initialisationNode;
         this.incrementNode = incrementNode;
