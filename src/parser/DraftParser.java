@@ -377,6 +377,14 @@ public class DraftParser {
             return binaryExpressionNode;
         }
 
+        // function call
+        lexer.restore();
+        lexer.snapshot();
+        FunctionCallNode functionCallNode = parseFunctionCall(symbolTable);
+        if(null != functionCallNode) {
+            return functionCallNode;
+        }
+
         // return node
         lexer.restore();
         lexer.snapshot();

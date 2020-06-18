@@ -18,7 +18,7 @@ public class BinaryExpressionNode implements GenericExpressionNode, StatementNod
     }
 
     @Override
-    public RhsValueType getRhsValueType() {
+    public RhsValueType getGenericExpressionType() {
         return RhsValueType.BINARY_EXPRESSION;
     }
 

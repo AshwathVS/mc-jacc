@@ -41,7 +41,7 @@ public class IdentifierNode implements GenericExpressionNode, StatementNode {
     }
 
     @Override
-    public RhsValueType getRhsValueType() {
+    public RhsValueType getGenericExpressionType() {
         return RhsValueType.IDENTIFIER;
     }
 

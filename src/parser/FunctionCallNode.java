@@ -12,7 +12,7 @@ public class FunctionCallNode implements GenericExpressionNode, StatementNode {
     }
 
     @Override
-    public RhsValueType getRhsValueType() {
+    public RhsValueType getGenericExpressionType() {
         return RhsValueType.FUNCTION_CALL;
     }
 

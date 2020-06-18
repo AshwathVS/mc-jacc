@@ -33,7 +33,7 @@ public abstract class Literal<T> implements GenericExpressionNode {
     }
 
     @Override
-    public RhsValueType getRhsValueType() {
+    public RhsValueType getGenericExpressionType() {
         return RhsValueType.LITERAL;
     }
 
