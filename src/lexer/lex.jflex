@@ -36,7 +36,9 @@ bool\s {
 string\s {
     return new Token(Type.STRING);
 }
-
+void\s {
+    return new Token(Type.VOID);
+}
 
 /** Arithmetic Operators: */
 \+
@@ -198,18 +200,6 @@ else
 {
     return new Token(Type.ELSE);
 }
-else\sif
-{
-    return new Token(Type.ELSE_IF);
-}
-switch\s
-{
-    return new Token(Type.SWITCH);
-}
-case\s
-{
-    return new Token(Type.CASE);
-}
 continue\s
 {
     return new Token(Type.CONTINUE);
@@ -240,6 +230,9 @@ do
 }
 
 /** Additional Operators: */
+return\s {
+    return new Token(Type.RETURN);
+}
 \:
 {
     return new Token(Type.COLON);

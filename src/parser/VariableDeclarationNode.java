@@ -1,6 +1,6 @@
 package parser;
 
-public class VariableDeclarationNode {
+public class VariableDeclarationNode implements StatementNode {
     private IdentifierNode lhs;
     private RhsValueNode rhs;
 
@@ -15,5 +15,10 @@ public class VariableDeclarationNode {
 
     public RhsValueNode getRhs() {
         return rhs;
+    }
+
+    @Override
+    public StatementType getStatementType() {
+        return StatementType.EXPRESSION;
     }
 }

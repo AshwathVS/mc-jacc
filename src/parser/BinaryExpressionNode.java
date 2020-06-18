@@ -6,7 +6,7 @@ package parser;
  * T -> F | F * F | F / F
  * F -> ID | LITERAL | FUNCTION_CALL | (E)
  */
-public class BinaryExpressionNode implements RhsValueNode {
+public class BinaryExpressionNode implements RhsValueNode, StatementNode {
     private RhsValueNode left, right;
 
     private Operator operator;
@@ -20,6 +20,11 @@ public class BinaryExpressionNode implements RhsValueNode {
     @Override
     public RhsValueType getRhsValueType() {
         return RhsValueType.BINARY_EXPRESSION;
+    }
+
+    @Override
+    public StatementType getStatementType() {
+        return StatementType.EXPRESSION;
     }
 
     public RhsValueNode getLeft() {

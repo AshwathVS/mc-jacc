@@ -1,6 +1,8 @@
 package parser;
 
-public class IdentifierNode implements RhsValueNode {
+import parser.symbolTable.VariableSymbolTableEntry;
+
+public class IdentifierNode implements RhsValueNode, StatementNode {
     private DataType dataType;
     private String identifierName;
     private Integer symbolTableId;
@@ -8,6 +10,12 @@ public class IdentifierNode implements RhsValueNode {
     public IdentifierNode(DataType dataType, String identifierName) {
         this.dataType = dataType;
         this.identifierName = identifierName;
+    }
+
+    public IdentifierNode(VariableSymbolTableEntry variableSymbolTableEntry, Integer symbolTableId) {
+        this.dataType = variableSymbolTableEntry.getDataType();
+        this.identifierName = variableSymbolTableEntry.getVariableName();
+        this.symbolTableId = symbolTableId;
     }
 
     public IdentifierNode(DataType dataType, String identifierName, Integer symbolTableId) {
@@ -35,5 +43,10 @@ public class IdentifierNode implements RhsValueNode {
     @Override
     public RhsValueType getRhsValueType() {
         return RhsValueType.IDENTIFIER;
+    }
+
+    @Override
+    public StatementType getStatementType() {
+        return StatementType.EXPRESSION;
     }
 }

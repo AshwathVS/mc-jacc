@@ -1,5 +1,5 @@
 package parser;
 
-public interface RhsValueNode {
+public interface RhsValueNode extends StatementNode {
     RhsValueType getRhsValueType();
 }

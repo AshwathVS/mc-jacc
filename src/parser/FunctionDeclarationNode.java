@@ -2,7 +2,6 @@ package parser;
 
 import parser.symbolTable.SymbolTable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionDeclarationNode extends SymbolTable {
@@ -16,12 +15,20 @@ public class FunctionDeclarationNode extends SymbolTable {
 
     private Integer symbolTableId;
 
-    public FunctionDeclarationNode(String functionName, SymbolTable parent, DataType returnType, BlockNode blockNode) {
+    public FunctionDeclarationNode(SymbolTable parent, String functionName, List<IdentifierNode> argumentList, BlockNode blockNode, DataType returnType, Integer symbolTableId) {
         super(parent);
         this.functionName = functionName;
-        argumentList = new ArrayList<>(100);
-        this.returnType = returnType;
+        this.argumentList = argumentList;
         this.blockNode = blockNode;
+        this.returnType = returnType;
+        this.symbolTableId = symbolTableId;
+    }
+
+    public FunctionDeclarationNode(SymbolTable parent, String functionName, List<IdentifierNode> argumentList, DataType returnType) {
+        super(parent);
+        this.functionName = functionName;
+        this.argumentList = argumentList;
+        this.returnType = returnType;
     }
 
     public String getFunctionName() {
@@ -47,4 +54,9 @@ public class FunctionDeclarationNode extends SymbolTable {
     public void setSymbolTableId(Integer symbolTableId) {
         this.symbolTableId = symbolTableId;
     }
+
+    public void setBlockNode(BlockNode blockNode) {
+        this.blockNode = blockNode;
+    }
+
 }

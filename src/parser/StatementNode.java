@@ -1,4 +1,5 @@
 package parser;
 
-public class StatementNode {
+public interface StatementNode {
+    StatementType getStatementType();
 }

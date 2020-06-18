@@ -9,6 +9,7 @@ public enum Type {
     CHARACTER,
     BOOLEAN,
     STRING,
+    VOID,
 
     /**
      * Arithmetic Operators:
@@ -75,9 +76,6 @@ public enum Type {
      */
     IF,
     ELSE,
-    ELSE_IF,
-    SWITCH,
-    CASE,
     CONTINUE,
     BREAK,
     GOTO,
@@ -93,6 +91,7 @@ public enum Type {
     /**
      * Additional Operators:
      */
+    RETURN,
     COLON,
     SEMI_COLON,
     OPEN_BRACKET,

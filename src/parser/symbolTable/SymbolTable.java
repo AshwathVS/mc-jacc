@@ -33,7 +33,7 @@ public class SymbolTable {
         functionNames = new HashMap<>(INITIAL_TABLE_CAPACITY);
     }
 
-    protected Integer addVariable(VariableSymbolTableEntry variableSymbolTableEntry) {
+    public Integer addVariable(VariableSymbolTableEntry variableSymbolTableEntry) {
         if(variableNames.containsKey(variableSymbolTableEntry.getVariableName())) {
             return null;
         } else {
@@ -43,7 +43,7 @@ public class SymbolTable {
         }
     }
 
-    protected Integer addFunction(FunctionSymbolTableEntry functionSymbolTableEntry) {
+    public Integer addFunction(FunctionSymbolTableEntry functionSymbolTableEntry) {
         String internalFunctionName = functionSymbolTableEntry.getFunctionName() + functionSymbolTableEntry.getArgumentCount();
         if(functionNames.containsKey(internalFunctionName)) {
             return null;

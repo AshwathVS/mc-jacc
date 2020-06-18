@@ -2,7 +2,7 @@ package parser;
 
 import java.util.List;
 
-public class FunctionCallNode implements RhsValueNode {
+public class FunctionCallNode implements RhsValueNode, StatementNode {
     String functionName;
     List<IdentifierNode> argumentsUsed;
 
@@ -14,6 +14,11 @@ public class FunctionCallNode implements RhsValueNode {
     @Override
     public RhsValueType getRhsValueType() {
         return RhsValueType.FUNCTION_CALL;
+    }
+
+    @Override
+    public StatementType getStatementType() {
+        return StatementType.EXPRESSION;
     }
 
     public String getFunctionName() {
