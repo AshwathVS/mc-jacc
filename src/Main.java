@@ -1,21 +1,22 @@
 import core.Token;
-import lexer.Lexer;
+import lexer.LexerWrapper;
+import parser.FairParser;
+import parser.ProgramNode;
+
 import java.io.FileReader;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         FileReader fileReader = new FileReader("C:\\Users\\Ashwath\\Documents\\Compiler Design\\lex\\inp.in");
-        Lexer lexer = new Lexer(fileReader);
-        while(!lexer.yyatEOF()) {
-            Token token = lexer.next();
+        LexerWrapper lexer = new LexerWrapper(fileReader);
+        while(!lexer.eof()) {
+            Token token = lexer.nextToken();
             if(token != null) {
                 System.out.println(token.getType() + " [" + token.getLineNumber() + ":" + token.getColumnNumber() + "]");
             }
         }
-//        DraftParser parser = new DraftParser(lexer);
-//        ProgramNode node = parser.parse();
-////        parser.printParseTree(node);
-////        System.out.println("Evaluated output: " + node.evaluate());
-//        System.out.println(node);
+        FairParser parser = new FairParser(lexer);
+        ProgramNode node = parser.parse();
+        System.out.println(node);
     }
 }
