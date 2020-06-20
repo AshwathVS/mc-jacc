@@ -16,8 +16,8 @@ public class Token {
     public Token(Type type, int lineNumber, int columnNumber) {
         this.type = type;
         this.value = null;
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
+        this.lineNumber = lineNumber + 1;
+        this.columnNumber = columnNumber + 1;
     }
 
     public Type getType() {

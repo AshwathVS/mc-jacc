@@ -63,12 +63,11 @@ public class FairParser {
             if(lexer.match(Type.COMMA)) lexer.nextToken();
         }
 
-        lexer.match(Type.CLOSE_BRACKET);
+        lexer.strictMatch(Type.CLOSE_BRACKET);
+        lexer.strictMatch(Type.B_RIGHT_SHIFT);
 
         // fetch function definition
-        lexer.strictMatch(Type.OPEN_CURLY_BRACE);
         StatementBlock statementBlock = parseBlock(functionDeclaration);
-        lexer.strictMatch(Type.CLOSE_CURLY_BRACE);
         functionDeclaration.setFunctionBlock(statementBlock);
         return functionDeclaration;
     }
@@ -104,7 +103,7 @@ public class FairParser {
                 lexer.strictMatch(Type.OPEN_BRACKET);
                 expression = parseBinaryExpression(symbolTable);
                 lexer.strictMatch(Type.CLOSE_BRACKET);
-
+                lexer.strictMatch(Type.GREATER_THAN);
             } else {
                 lexer.addError("Invalid variable declaration found at: " + "[" + top.getLineNumber() + ":" + top.getColumnNumber() +"]");
             }
@@ -149,14 +148,6 @@ public class FairParser {
         return left;
     }
 
-    /**
-     * FUNCTION_CALL,
-     * IDENTIFIER,
-     * LITERAL,
-     * BINARY_EXPRESSION;
-     * @param symbolTable
-     * @return
-     */
     private BinaryExpression parseFactor(SymbolTable symbolTable) {
 
         Token top = lexer.top();
@@ -210,12 +201,12 @@ public class FairParser {
     }
 
     private StatementBlock parseBlock(SymbolTable symbolTable) throws ParseException {
-        lexer.match(Type.OPEN_CURLY_BRACE);
+        lexer.strictMatch(Type.OPEN_CURLY_BRACE);
         Token top = lexer.top();
         if (top == null) throw new ParseException("Abrupt end of program detected");
         List<BaseStatement> statements = new ArrayList<>(20);
         StatementBlock statementBlock = new StatementBlock(symbolTable);
-        while(Type.CLOSE_CURLY_BRACE.equals(top.getType())) {
+        while(!Type.CLOSE_CURLY_BRACE.equals(top.getType())) {
             BaseStatement baseStatement = null;
 
             // variable assignment
@@ -223,8 +214,10 @@ public class FairParser {
                 baseStatement = parseVariableAssignment(statementBlock);
             }
             // variable declaration
-            else if(lexer.match(DataType.getDataTypeOperators())) {
-                baseStatement = parseVariableDeclaration(statementBlock);
+            else if(lexer.match(Type.LESS_THAN)) {
+                VariableDeclaration variableDeclaration = parseVariableDeclaration(statementBlock);
+                statementBlock.addVariable(new VariableSymbolTableEntry(variableDeclaration));
+                baseStatement = variableDeclaration;
             }
             else if(Type.AT.equals(top.getType())) {
                 // control statement
