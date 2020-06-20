@@ -1,32 +1,24 @@
 package parser.controlAndLoopStatements;
 
-import parser.BlockNode;
-import parser.GenericExpressionNode;
-import parser.StatementNode;
+import parser.BaseStatement;
+import parser.BinaryExpression;
+import parser.StatementBlock;
 
-public abstract class BaseControlStatement implements StatementNode {
-    private BlockNode blockNode;
+public abstract class BaseControlStatement implements BaseStatement {
+    private StatementBlock statementBlock;
 
-    private GenericExpressionNode conditionStatement;
+    private BinaryExpression conditionStatement;
 
-    public BaseControlStatement(BlockNode blockNode, GenericExpressionNode conditionStatement) {
-        this.blockNode = blockNode;
+    public BaseControlStatement(BinaryExpression conditionStatement, StatementBlock statementBlock) {
+        this.statementBlock = statementBlock;
         this.conditionStatement = conditionStatement;
     }
 
-    public BlockNode getBlockNode() {
-        return blockNode;
+    public StatementBlock getStatementBlock() {
+        return statementBlock;
     }
 
-    public void setBlockNode(BlockNode blockNode) {
-        this.blockNode = blockNode;
-    }
-
-    public GenericExpressionNode getConditionStatement() {
+    public BinaryExpression getConditionStatement() {
         return conditionStatement;
-    }
-
-    public void setConditionStatement(GenericExpressionNode conditionStatement) {
-        this.conditionStatement = conditionStatement;
     }
 }

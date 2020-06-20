@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class ProgramNode extends SymbolTable {
 
-    private List<VariableDeclarationNode> variableDeclarations;
+    private List<VariableDeclaration> variableDeclarations;
 
-    private List<FunctionDeclarationNode> functionDeclarationNodes;
+    private List<FunctionDeclaration> functionDeclarationNodes;
 
     public ProgramNode() {
         super(null);
@@ -22,28 +22,32 @@ public class ProgramNode extends SymbolTable {
         functionDeclarationNodes = new ArrayList<>(100);
     }
 
-    public void addVariable(VariableDeclarationNode variableDeclarationNode) {
+    public boolean addVariable(VariableDeclaration variableDeclarationNode) {
         IdentifierNode identifierNode = variableDeclarationNode.getLhs();
         VariableSymbolTableEntry variableSymbolTableEntry = new VariableSymbolTableEntry(identifierNode.getIdentifierName(), identifierNode.getDataType(), variableDeclarationNode.getRhs());
         Integer id = addVariable(variableSymbolTableEntry);
         if (null == id) {
             // Duplicate id found
             // TODO: Throw exception
+            return false;
         } else {
-            identifierNode.setSymbolTableId(id);
+            identifierNode.setSymbolTableReference(id);
             this.variableDeclarations.add(variableDeclarationNode);
+            return true;
         }
     }
 
-    public void addFunction(FunctionDeclarationNode functionDeclarationNode) {
-        FunctionSymbolTableEntry functionSymbolTableEntry = new FunctionSymbolTableEntry(functionDeclarationNode.getFunctionName(), functionDeclarationNode.getArgumentList());
+    public boolean addFunction(FunctionDeclaration functionDeclarationNode) {
+        FunctionSymbolTableEntry functionSymbolTableEntry = new FunctionSymbolTableEntry(functionDeclarationNode.getFunctionName(), functionDeclarationNode.getArguments());
         Integer id = addFunction(functionSymbolTableEntry);
         if (null == id) {
             // Duplicate function found with same name and argument count
             // TODO: Throw Exception
+            return false;
         } else {
-            functionDeclarationNode.setSymbolTableId(id);
+            functionDeclarationNode.setSymbolTableReference(id);
             functionDeclarationNodes.add(functionDeclarationNode);
+            return true;
         }
     }
 }

@@ -7,7 +7,8 @@ public enum DataType {
     DOUBLE,
     CHARACTER,
     STRING,
-    BOOLEAN,;
+    BOOLEAN,
+    UNDEFINED,;
 
     public static DataType getDataType(Type type) {
         if(null != type) {
@@ -25,5 +26,9 @@ public enum DataType {
             }
         }
         return null;
+    }
+
+    public static Type[] getDataTypeOperators() {
+        return new Type[] { Type.INTEGER, Type.DOUBLE, Type.CHARACTER, Type.STRING, Type.BOOLEAN};
     }
 }

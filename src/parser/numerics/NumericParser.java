@@ -43,10 +43,10 @@ public class NumericParser extends Parser {
     }
 
     public NumericExpressionNode parseFactor() {
-        if(lexerWrapper.match(Type.OPEN_BRACKET)) {
+        if(lexerWrapper.strictMatch(Type.OPEN_BRACKET)) {
             Token openBracket = lexerWrapper.nextToken();
             NumericExpressionNode expressionNode = parseExpression();
-            if(lexerWrapper.match(Type.CLOSE_BRACKET)) {
+            if(lexerWrapper.strictMatch(Type.CLOSE_BRACKET)) {
                 // Todo: Throw exception
             }
             Token closeBracket = lexerWrapper.nextToken();

@@ -1,52 +1,34 @@
 package parser;
 
-import parser.symbolTable.VariableSymbolTableEntry;
-
-public class IdentifierNode implements GenericExpressionNode, StatementNode {
-    private DataType dataType;
+public class IdentifierNode implements RhsExpression {
     private String identifierName;
-    private Integer symbolTableId;
+    private DataType dataType;
+    private Integer symbolTableReference;
 
-    public IdentifierNode(DataType dataType, String identifierName) {
-        this.dataType = dataType;
+    public IdentifierNode(String identifierName, DataType dataType, Integer symbolTableReference) {
         this.identifierName = identifierName;
-    }
-
-    public IdentifierNode(VariableSymbolTableEntry variableSymbolTableEntry, Integer symbolTableId) {
-        this.dataType = variableSymbolTableEntry.getDataType();
-        this.identifierName = variableSymbolTableEntry.getVariableName();
-        this.symbolTableId = symbolTableId;
-    }
-
-    public IdentifierNode(DataType dataType, String identifierName, Integer symbolTableId) {
         this.dataType = dataType;
-        this.identifierName = identifierName;
-        this.symbolTableId = symbolTableId;
-    }
-
-    public DataType getDataType() {
-        return dataType;
+        this.symbolTableReference = symbolTableReference;
     }
 
     public String getIdentifierName() {
         return identifierName;
     }
 
-    public Integer getSymbolTableId() {
-        return symbolTableId;
+    public DataType getDataType() {
+        return dataType;
     }
 
-    public void setSymbolTableId(Integer symbolTableId) {
-        this.symbolTableId = symbolTableId;
+    public Integer getSymbolTableReference() {
+        return symbolTableReference;
+    }
+
+    public void setSymbolTableReference(Integer symbolTableReference) {
+        this.symbolTableReference = symbolTableReference;
     }
 
     @Override
-    public RhsValueType getGenericExpressionType() {
-        return RhsValueType.IDENTIFIER;
-    }
-
-    @Override
-    public StatementType getStatementType() {
-        return StatementType.EXPRESSION;
+    public BinaryExpressionType getExpressionType() {
+        return BinaryExpressionType.IDENTIFIER;
     }
 }

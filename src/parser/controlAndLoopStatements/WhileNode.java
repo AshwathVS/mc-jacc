@@ -1,17 +1,21 @@
 package parser.controlAndLoopStatements;
 
-import parser.BlockNode;
-import parser.GenericExpressionNode;
-import parser.StatementType;
+import parser.BaseStatementType;
+import parser.BinaryExpression;
+import parser.StatementBlock;
 
 public class WhileNode extends BaseControlStatement {
 
-    public WhileNode(BlockNode blockNode, GenericExpressionNode conditionStatement) {
-        super(blockNode, conditionStatement);
+    private boolean isDoWhile;
+
+    public WhileNode(BinaryExpression conditionStatement, StatementBlock block, boolean isDoWhile) {
+        super(conditionStatement, block);
+        this.isDoWhile = isDoWhile;
     }
 
     @Override
-    public StatementType getStatementType() {
-        return StatementType.WHILE;
+    public BaseStatementType getStatementType() {
+        if(isDoWhile) return BaseStatementType.DO_WHILE;
+        else return BaseStatementType.WHILE;
     }
 }

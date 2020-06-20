@@ -42,12 +42,12 @@ public enum Operator {
         return operatorPrecedenceMap.get(type);
     }
 
-    public static Type[] getOperatorsWithEqualPrecedence(int precedence) {
+    public static List<Type> getOperatorsWithEqualPrecedence(int precedence) {
         List<Type> operators = new ArrayList<>(5);
         for(Operator iter : Operator.values()) {
             if(iter.getPrecedence() == precedence) operators.add(iter.getOperator());
         }
-        return (Type[]) operators.toArray();
+        return operators;
     }
 
     public int getPrecedence() {
@@ -58,13 +58,13 @@ public enum Operator {
         return this.operator;
     }
 
-    public static Type[] getOperatorsWithGreaterPrecedence(int precedence) {
+    public static List<Type> getOperatorsWithGreaterPrecedence(int precedence) {
         List<Type> operators = new ArrayList<>(10);
         for(Operator iter: Operator.values()) {
             if(iter.precedence <= precedence) {
                 operators.add(iter.getOperator());
             }
         }
-        return (Type[]) operators.toArray();
+        return operators;
     }
 }

@@ -1,11 +1,10 @@
 package parser.literal;
 
 import core.Token;
-import parser.GenericExpressionNode;
-import parser.RhsValueType;
-import parser.StatementType;
+import parser.BinaryExpressionType;
+import parser.RhsExpression;
 
-public abstract class Literal<T> implements GenericExpressionNode {
+public abstract class Literal<T> implements RhsExpression {
 
     public abstract LiteralType getLiteralType();
 
@@ -33,12 +32,8 @@ public abstract class Literal<T> implements GenericExpressionNode {
     }
 
     @Override
-    public RhsValueType getGenericExpressionType() {
-        return RhsValueType.LITERAL;
+    public BinaryExpressionType getExpressionType() {
+        return BinaryExpressionType.LITERAL;
     }
 
-    @Override
-    public StatementType getStatementType() {
-        return StatementType.EXPRESSION;
-    }
 }

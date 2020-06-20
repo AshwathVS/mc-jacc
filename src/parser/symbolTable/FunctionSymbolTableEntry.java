@@ -1,14 +1,15 @@
 package parser.symbolTable;
 
-import parser.IdentifierNode;
+import parser.VariableDeclaration;
+
 import java.util.List;
 
 public class FunctionSymbolTableEntry {
     String functionName;
 
-    List<IdentifierNode> arguments;
+    List<VariableDeclaration> arguments;
 
-    public FunctionSymbolTableEntry(String functionName, List<IdentifierNode> arguments) {
+    public FunctionSymbolTableEntry(String functionName, List<VariableDeclaration> arguments) {
         this.functionName = functionName;
         this.arguments = arguments;
     }
@@ -17,7 +18,7 @@ public class FunctionSymbolTableEntry {
         return functionName;
     }
 
-    public List<IdentifierNode> getArguments() {
+    public List<VariableDeclaration> getArguments() {
         return arguments;
     }
 
@@ -29,7 +30,7 @@ public class FunctionSymbolTableEntry {
         this.functionName = functionName;
     }
 
-    public void setArguments(List<IdentifierNode> arguments) {
+    public void setArguments(List<VariableDeclaration> arguments) {
         this.arguments = arguments;
     }
 

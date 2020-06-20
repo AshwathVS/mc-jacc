@@ -3,18 +3,18 @@ package parser.controlAndLoopStatements;
 import parser.*;
 
 public class ForNode extends BaseControlStatement {
-    private VariableDeclarationNode initialisationNode;
+    private BaseStatement initialisationNode;
 
-    private GenericExpressionNode incrementNode;
+    private VariableAssignment incrementNode;
 
-    public ForNode(VariableDeclarationNode initialisationNode, GenericExpressionNode conditionStatement, GenericExpressionNode incrementNode, BlockNode blockNode) {
-        super(blockNode, conditionStatement);
+    public ForNode(BaseStatement initialisationNode, BinaryExpression conditionStatement, VariableAssignment incrementNode, StatementBlock blockNode) {
+        super(conditionStatement, blockNode);
         this.initialisationNode = initialisationNode;
         this.incrementNode = incrementNode;
     }
 
     @Override
-    public StatementType getStatementType() {
-        return StatementType.FOR;
+    public BaseStatementType getStatementType() {
+        return BaseStatementType.FOR;
     }
 }

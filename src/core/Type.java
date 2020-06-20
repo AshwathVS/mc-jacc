@@ -76,21 +76,23 @@ public enum Type {
      */
     IF,
     ELSE,
+    ELSE_IF,
     CONTINUE,
     BREAK,
-    GOTO,
 
     /**
      * Loop Operators:
      */
     FOR,
     WHILE,
-    DO,
+    DO_WHILE,
 
 
     /**
      * Additional Operators:
      */
+    AT,
+    DOLLAR,
     RETURN,
     COLON,
     SEMI_COLON,
@@ -122,8 +124,5 @@ public enum Type {
     BOOLEAN_LITERAL,
     DOUBLE_LITERAL,;
 
-    public static Type[] getDataTypeOperators() {
-        return new Type[] {INTEGER, DOUBLE, CHARACTER, STRING, BOOLEAN};
-    }
 
 };

@@ -77,4 +77,11 @@ public class SymbolTable {
         else return null;
     }
 
+    public boolean checkFunctionInScope(String functionName, Integer argumentCount) {
+        return getFunction(functionName, argumentCount) != null;
+    }
+
+    public boolean checkVariableInScope(String variableName) {
+        return getVariable(variableName) != null;
+    }
 }
