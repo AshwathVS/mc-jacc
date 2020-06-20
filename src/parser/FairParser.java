@@ -176,7 +176,18 @@ public class FairParser {
         else if (null != top && Type.DOLLAR.equals(top.getType())) {
             FunctionCall functionCall = parseFunctionCall(symbolTable);
             return new BinaryExpression(functionCall);
-        } else {
+        }
+
+        // Bracketed expression
+        else if (null != top && Type.OPEN_BRACKET.equals(top.getType())) {
+            lexer.strictMatch(Type.OPEN_BRACKET);
+            BinaryExpression expression = parseBinaryExpression(symbolTable);
+            lexer.strictMatch(Type.CLOSE_BRACKET);
+            return expression;
+        }
+
+        // Identifier usage
+        else {
             Token variable = parseIdentifier();
             IdentifierNode identifierNode = getIdentifierNode(variable, symbolTable);
             return new BinaryExpression(identifierNode);

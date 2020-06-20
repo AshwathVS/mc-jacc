@@ -1,11 +1,5 @@
 import core.Token;
 import lexer.Lexer;
-import lexer.LexerWrapper;
-import parser.DraftParser;
-import parser.ProgramNode;
-import parser.numerics.NumericExpressionNode;
-import parser.numerics.NumericParser;
-
 import java.io.FileReader;
 
 public class Main {
