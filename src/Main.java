@@ -1,6 +1,5 @@
-import core.Token;
 import lexer.LexerWrapper;
-import parser.FairParser;
+import parser.Parser;
 import parser.ProgramNode;
 
 import java.io.FileReader;
@@ -15,7 +14,7 @@ public class Main {
 //                System.out.println(token.getType() + " [" + token.getLineNumber() + ":" + token.getColumnNumber() + "]");
 //            }
 //        }
-        FairParser parser = new FairParser(lexer);
+        Parser parser = new Parser(lexer);
         ProgramNode node = parser.parse();
         System.out.println(node);
     }
