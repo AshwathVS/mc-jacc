@@ -71,33 +71,6 @@ void\s {
 }
 
 
-/** Relational Operators: */
-\=\=|EE
-{
-  return new Token(Type.EQUALS, yyline, yycolumn);
-}
-\!\=|NE
-{
-    return new Token(Type.NOT_EQUALS, yyline, yycolumn);
-}
-\>|GT
-{
-    return new Token(Type.GREATER_THAN, yyline, yycolumn);
-}
-\<|LT
-{
-    return new Token(Type.LESS_THAN, yyline, yycolumn);
-}
-\>=|GE
-{
-    return new Token(Type.GREATER_THAN_EQUAL, yyline, yycolumn);
-}
-\<=|LE
-{
-    return new Token(Type.LESS_THAN_EQUAL, yyline, yycolumn);
-}
-
-
 /** Bit Wise Operators: */
 \&
 {
@@ -127,6 +100,34 @@ void\s {
 {
     return new Token(Type.B_RIGHT_SHIFT_ZERO, yyline, yycolumn);
 }
+
+
+/** Relational Operators: */
+\=\=|EE
+{
+  return new Token(Type.EQUALS, yyline, yycolumn);
+}
+\!\=|NE
+{
+    return new Token(Type.NOT_EQUALS, yyline, yycolumn);
+}
+\>|GT
+{
+    return new Token(Type.GREATER_THAN, yyline, yycolumn);
+}
+\<|LT
+{
+    return new Token(Type.LESS_THAN, yyline, yycolumn);
+}
+\>=|GE
+{
+    return new Token(Type.GREATER_THAN_EQUAL, yyline, yycolumn);
+}
+\<=|LE
+{
+    return new Token(Type.LESS_THAN_EQUAL, yyline, yycolumn);
+}
+
 
 
 /** Logical Operators: */

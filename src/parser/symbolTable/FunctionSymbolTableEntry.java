@@ -2,16 +2,21 @@ package parser.symbolTable;
 
 import parser.VariableDeclaration;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FunctionSymbolTableEntry {
     String functionName;
 
     List<VariableDeclaration> arguments;
 
-    public FunctionSymbolTableEntry(String functionName, List<VariableDeclaration> arguments) {
+    public FunctionSymbolTableEntry(String functionName, Map<String, VariableDeclaration> arguments) {
         this.functionName = functionName;
-        this.arguments = arguments;
+        this.arguments = new ArrayList<>(10);
+        for(Map.Entry<String, VariableDeclaration> entry : arguments.entrySet()) {
+            this.arguments.add(entry.getValue());
+        }
     }
 
     public String getFunctionName() {
