@@ -4,9 +4,9 @@ import java.util.List;
 
 public class FunctionCall implements BaseStatement, RhsExpression {
     private String functionName;
-    List<IdentifierNode> arguments;
+    List<BinaryExpression> arguments;
 
-    public FunctionCall(String functionName, List<IdentifierNode> arguments) {
+    public FunctionCall(String functionName, List<BinaryExpression> arguments) {
         this.functionName = functionName;
         this.arguments = arguments;
     }
@@ -15,7 +15,7 @@ public class FunctionCall implements BaseStatement, RhsExpression {
         return functionName;
     }
 
-    public List<IdentifierNode> getArguments() {
+    public List<BinaryExpression> getArguments() {
         return arguments;
     }
 

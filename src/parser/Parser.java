@@ -7,11 +7,13 @@ import lexer.LexerWrapper;
 import parser.controlAndLoopStatements.*;
 import parser.literal.Literal;
 import parser.literal.LiteralType;
+import parser.symbolTable.FunctionSymbolTableEntry;
 import parser.symbolTable.SymbolTable;
 import parser.symbolTable.VariableSymbolTableEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Parser {
     private LexerWrapper lexer;
@@ -20,31 +22,42 @@ public class Parser {
         this.lexer = lexerWrapper;
     }
 
-    public ProgramNode parse() throws ParseException {
-        ProgramNode programNode = new ProgramNode();
-        while(!lexer.eof()) {
-            Token token = lexer.top();
+    public ProgramNode parse() throws Exception {
+        try {
+            ProgramNode programNode = new ProgramNode();
+            while(!lexer.eof()) {
+                Token token = lexer.top();
 
-            // function definition
-            if(Type.B_LEFT_SHIFT.equals(token.getType())) {
-                FunctionDeclaration functionDeclarationNode = parseFunctionDeclaration(programNode);
-                boolean addSuccess = programNode.addFunction(functionDeclarationNode);
-                if(!addSuccess) {
-                    throw new ParseException(ParseErrorMessages.DUPLICATE_FUNCTION_USED + " " + functionDeclarationNode.getFunctionName());
+                // function definition
+                if(Type.B_LEFT_SHIFT.equals(token.getType())) {
+                    FunctionDeclaration functionDeclarationNode = parseFunctionDeclaration(programNode);
+                    boolean addSuccess = programNode.addFunction(functionDeclarationNode);
+                    if(!addSuccess) {
+                        throw new ParseException(ParseErrorMessages.DUPLICATE_FUNCTION_USED + " " + functionDeclarationNode.getFunctionName());
+                    }
+                }
+                // variable definition
+                else if (Type.LESS_THAN.equals(token.getType())) {
+                    VariableDeclaration variableDeclaration = parseVariableDeclaration(programNode);
+                    boolean addVariableSuccess = programNode.addVariable(variableDeclaration);
+                    if(!addVariableSuccess) {
+                        throw new ParseException(ParseErrorMessages.DUPLICATE_VARIABLE_USED + " " + variableDeclaration.getLhs().getIdentifierName());
+                    }
+                } else {
+                    throw new ParseException("Expected character found at [" + token.getLineNumber() + ":" + token.getColumnNumber() + "]");
                 }
             }
-            // variable definition
-            else if (Type.LESS_THAN.equals(token.getType())) {
-                VariableDeclaration variableDeclaration = parseVariableDeclaration(programNode);
-                boolean addVariableSuccess = programNode.addVariable(variableDeclaration);
-                if(!addVariableSuccess) {
-                    throw new ParseException(ParseErrorMessages.DUPLICATE_VARIABLE_USED + " " + variableDeclaration.getLhs().getIdentifierName());
-                }
+            if(null != lexer.getErrors()) throw new ParseException(lexer.getErrors());
+            return programNode;
+        } catch(ParseException | NullPointerException ex) {
+            if(ex instanceof ParseException) {
+                Set<String> errorMessages = ((ParseException) ex).getErrorMessages();
+                if(ex.getMessage()!= null) lexer.addError(ex.getMessage());
+                throw new ParseException(errorMessages);
             } else {
-                throw new ParseException("Expected character found at [" + token.getLineNumber() + ":" + token.getColumnNumber() + "]");
+                throw new NullPointerException("Abrupt end of program detected!");
             }
         }
-        return programNode;
     }
 
     private FunctionDeclaration parseFunctionDeclaration(SymbolTable symbolTable) throws ParseException {
@@ -59,8 +72,8 @@ public class Parser {
         while(!lexer.eof() && !Type.CLOSE_BRACKET.equals(lexer.top().getType())) {
             VariableDeclaration variableDeclaration = parseVariableDeclaration(functionDeclaration);
             functionDeclaration.addArgument(variableDeclaration);
-
-            if(lexer.match(Type.COMMA)) lexer.nextToken();
+            symbolTable.addVariable(new VariableSymbolTableEntry(variableDeclaration));
+            if(lexer.isMatch(Type.COMMA)) lexer.nextToken();
         }
 
         lexer.strictMatch(Type.CLOSE_BRACKET);
@@ -77,7 +90,7 @@ public class Parser {
     }
 
     private DataType parseDataType() {
-        if(lexer.match(DataType.getDataTypeOperators())) {
+        if(lexer.isMatch(DataType.getDataTypeOperators())) {
             return DataType.getDataType(lexer.nextToken().getType());
         } else {
             if(null == lexer.top())
@@ -93,6 +106,7 @@ public class Parser {
         lexer.strictMatch(Type.LESS_THAN);
         DataType dataType = parseDataType();
         String variableName = parseIdentifier().getValue();
+
         Token top = lexer.top();
         if(null == top) {
             lexer.addError("Abrupt end of variable declaration");
@@ -111,18 +125,92 @@ public class Parser {
         return new VariableDeclaration(new IdentifierNode(variableName, dataType, null), expression);
     }
 
+    private BooleanExpression parseBooleanExpression(SymbolTable symbolTable) throws ParseException {
+        BooleanExpression left = parseBooleanTerm(symbolTable);
+
+        while(lexer.isMatch(Type.OR)) {
+            Token token = lexer.nextToken();
+            BooleanOperator op = BooleanOperator.getOperator(token.getType());
+            BooleanExpression right = parseBooleanTerm(symbolTable);
+            left = new BooleanExpression(left, right, op);
+        }
+        return left;
+    }
+
+    private BooleanExpression parseBooleanTerm(SymbolTable symbolTable) throws ParseException {
+        BooleanExpression left = parseBooleanFactor(symbolTable);
+
+        while(lexer.isMatch(Type.AND)) {
+            Token token = lexer.nextToken();
+            BooleanOperator op = BooleanOperator.getOperator(token.getType());
+            BooleanExpression right = parseBooleanTerm(symbolTable);
+            left = new BooleanExpression(left, right, op);
+        }
+        return left;
+    }
+
+    private BooleanExpression parseBooleanFactor(SymbolTable symbolTable) throws ParseException {
+        if(lexer.isMatch(Type.OPEN_BRACKET)) {
+            lexer.strictMatch(Type.OPEN_BRACKET);
+            BooleanExpression booleanExpression = parseBooleanExpression(symbolTable);
+            lexer.strictMatch(Type.CLOSE_BRACKET);
+            return booleanExpression;
+        } else if (lexer.isMatch(Type.NOT)) {
+            lexer.nextToken();
+            BooleanOperator op = BooleanOperator.NOT;
+            BooleanExpression booleanExpression = parseBooleanExpression(symbolTable);
+            return new BooleanExpression(booleanExpression, null, op);
+        } else {
+            return parseRelationalExpression(symbolTable);
+        }
+    }
+
+    private RelationalExpression parseRelationalExpression(SymbolTable symbolTable) throws ParseException {
+        BinaryExpression rLeft = parseBinaryExpression(symbolTable), rRight = null;
+        RelationalOperator operator = null;
+        if(lexer.isMatch(RelationalOperator.getTypes())) {
+            operator = RelationalOperator.getOperator(lexer.nextToken().getType());
+            rRight = parseBinaryExpression(symbolTable);
+        } else {
+
+            // if there is no relational operator, left should be a boolean literal or a function call returning null
+            boolean validBooleanExp = false;
+            RhsExpression left = rLeft.getLeft();
+            if(BinaryExpressionType.LITERAL.equals(left.getExpressionType())) {
+                if(LiteralType.BOOLEAN_LITERAL.equals(((Literal) left).getLiteralType())) {
+                    validBooleanExp = true;
+                }
+            } else if(BinaryExpressionType.FUNCTION_CALL.equals(left.getExpressionType())) {
+                FunctionCall functionCall = (FunctionCall) left;
+                FunctionSymbolTableEntry functionDeclaration = symbolTable.getFunction(functionCall.getFunctionName(), functionCall.getArguments().size()).value;
+                if(functionDeclaration.getReturnType().equals(DataType.BOOLEAN)) {
+                    validBooleanExp = true;
+                }
+            }
+
+            if(!validBooleanExp) {
+                throw new ParseException("Invalid boolean expression defined at [" + lexer.top().getLineNumber() + ":" + lexer.top().getLineNumber() + "]");
+            }
+        }
+        return new RelationalExpression(rLeft, rRight, operator);
+    }
+
     private BinaryExpression parseBinaryExpression(SymbolTable symbolTable) {
-        Operator start = Operator.NULL;
+        ArithmeticOperator start = ArithmeticOperator.NULL;
         BinaryExpression left = parseBinaryTerm(symbolTable, start.getPrecedence());
 
-        if(lexer.match(Operator.getOperatorsWithGreaterPrecedence(start.getPrecedence()))) {
+        if(lexer.isMatch(ArithmeticOperator.getOperatorsWithGreaterPrecedence(start.getPrecedence()))) {
             Token token = lexer.top();
-            start = Operator.getPrecedenceForOperator(token.getType());
+            start = ArithmeticOperator.getPrecedenceForOperator(token.getType());
         }
 
-        while(null != start && lexer.match(Operator.getOperatorsWithEqualPrecedence(start.getPrecedence()))) {
+        return getBinaryExpression(symbolTable, start, left);
+    }
+
+    private BinaryExpression getBinaryExpression(SymbolTable symbolTable, ArithmeticOperator start, BinaryExpression left) {
+        while(null != start && lexer.isMatch(ArithmeticOperator.getOperatorsWithEqualPrecedence(start.getPrecedence()))) {
             Token token = lexer.nextToken();
-            start = Operator.getPrecedenceForOperator(token.getType());
+            start = ArithmeticOperator.getPrecedenceForOperator(token.getType());
             BinaryExpression right = parseBinaryTerm(symbolTable, start.getPrecedence());
             left = new BinaryExpression(left, right, start);
         }
@@ -134,18 +222,12 @@ public class Parser {
         if(null == left) {
             return null;
         }
-        Operator start = null;
-        if(lexer.match(Operator.getOperatorsWithGreaterPrecedence(previousPrecedence))) {
+        ArithmeticOperator start = null;
+        if(lexer.isMatch(ArithmeticOperator.getOperatorsWithGreaterPrecedence(previousPrecedence))) {
             Token token = lexer.top();
-            start = Operator.getPrecedenceForOperator(token.getType());
+            start = ArithmeticOperator.getPrecedenceForOperator(token.getType());
         }
-        while(null != start && lexer.match(Operator.getOperatorsWithEqualPrecedence(start.getPrecedence()))) {
-            Token token = lexer.nextToken();
-            start = Operator.getPrecedenceForOperator(token.getType());
-            BinaryExpression right = parseBinaryTerm(symbolTable, start.getPrecedence());
-            left = new BinaryExpression(left, right, start);
-        }
-        return left;
+        return getBinaryExpression(symbolTable, start, left);
     }
 
     private BinaryExpression parseFactor(SymbolTable symbolTable) {
@@ -157,12 +239,12 @@ public class Parser {
         }
 
         // literal match
-        else if(lexer.match(LiteralType.getLiteralTypes())) {
+        else if(lexer.isMatch(LiteralType.getArithmeticLiteralTypes())) {
             Literal literal = Literal.parseTokenToLiteral(lexer.nextToken());
             return new BinaryExpression(literal);
         }
         // Function call
-        else if (null != top && Type.DOLLAR.equals(top.getType())) {
+        else if (null != top && Type.FUNCTION_CALL_PREFIX.equals(top.getType())) {
             FunctionCall functionCall = parseFunctionCall(symbolTable);
             return new BinaryExpression(functionCall);
         }
@@ -184,19 +266,17 @@ public class Parser {
     }
 
     private FunctionCall parseFunctionCall(SymbolTable symbolTable) {
-        lexer.strictMatch(Type.DOLLAR);
-        lexer.strictMatch(Type.DOT);
+        lexer.strictMatch(Type.FUNCTION_CALL_PREFIX);
         Token functionName = parseIdentifier();
         lexer.strictMatch(Type.OPEN_BRACKET);
-        List<IdentifierNode> passedArguments = new ArrayList<>(10);
-        while(!lexer.eof() && !lexer.match(Type.CLOSE_BRACKET)) {
-            Token identifierToken = parseIdentifier();
-            IdentifierNode identifierNode = getIdentifierNode(identifierToken, symbolTable);
-            passedArguments.add(identifierNode);
-            if(lexer.match(Type.COMMA)) lexer.nextToken();
+        List<BinaryExpression> passedArguments = new ArrayList<>(10);
+        while(!lexer.eof() && !lexer.isMatch(Type.CLOSE_BRACKET)) {
+            BinaryExpression binaryExpression = parseBinaryExpression(symbolTable);
+            passedArguments.add(binaryExpression);
+            if(lexer.isMatch(Type.COMMA)) lexer.nextToken();
         }
 
-        lexer.match(Type.CLOSE_BRACKET);
+        lexer.strictMatch(Type.CLOSE_BRACKET);
         return new FunctionCall(functionName.getValue(), passedArguments);
     }
 
@@ -214,15 +294,14 @@ public class Parser {
                 baseStatement = parseVariableAssignment(statementBlock);
             }
             // variable declaration
-            else if(lexer.match(Type.LESS_THAN)) {
+            else if(lexer.isMatch(Type.LESS_THAN)) {
                 VariableDeclaration variableDeclaration = parseVariableDeclaration(statementBlock);
                 statementBlock.addVariable(new VariableSymbolTableEntry(variableDeclaration));
                 baseStatement = variableDeclaration;
             }
-            else if(Type.AT.equals(top.getType())) {
+            else if(Type.INTERNAL_CALL_PREFIX.equals(top.getType())) {
                 // control statement
-                lexer.strictMatch(Type.AT);
-                lexer.strictMatch(Type.DOT);
+                lexer.strictMatch(Type.INTERNAL_CALL_PREFIX);
                 if(lexer.top() == null) throw new ParseException("Abrupt end of program detected");
 
                 switch (lexer.top().getType()) {
@@ -264,7 +343,7 @@ public class Parser {
             }
 
             // function call
-            else if(Type.DOLLAR.equals(top.getType())) {
+            else if(Type.FUNCTION_CALL_PREFIX.equals(top.getType())) {
                 FunctionCall functionCall = parseFunctionCall(statementBlock);
                 baseStatement = functionCall;
             } else if (Type.BREAK.equals(top.getType())) {
@@ -281,9 +360,11 @@ public class Parser {
             top = lexer.top();
             if(top == null) {
                 throw new ParseException("Abrupt end of program detected");
+            } else if (Type.CLOSE_CURLY_BRACE.equals(top.getType())) {
+                break;
             }
         }
-        lexer.strictMatch(Type.OPEN_CURLY_BRACE);
+        lexer.strictMatch(Type.CLOSE_CURLY_BRACE);
         statementBlock.setStatements(statements);
 
         return statementBlock;
@@ -302,9 +383,9 @@ public class Parser {
         if(null == top) {
             throw new ParseException("Abrupt end of program detected");
         } else {
-            BaseStatement init = null;
-            BinaryExpression condition = null;
-            VariableAssignment increment = null;
+            BaseStatement init;
+            BooleanExpression condition;
+            VariableAssignment increment;
             if(Type.LESS_THAN.equals(top.getType())) {
                 VariableDeclaration declaration = parseVariableDeclaration(symbolTable);
                 symbolTable.addVariable(new VariableSymbolTableEntry(declaration));
@@ -314,7 +395,7 @@ public class Parser {
             }
             lexer.strictMatch(Type.SEMI_COLON);
 
-            condition = parseBinaryExpression(symbolTable);
+            condition = parseBooleanExpression(symbolTable);
 
             lexer.strictMatch(Type.SEMI_COLON);
 
@@ -333,7 +414,7 @@ public class Parser {
         else lexer.strictMatch(Type.WHILE);
 
         lexer.strictMatch(Type.OPEN_BRACKET);
-        BinaryExpression conditionStatement = parseBinaryExpression(symbolTable);
+        BooleanExpression conditionStatement = parseBooleanExpression(symbolTable);
         lexer.strictMatch(Type.CLOSE_BRACKET);
         StatementBlock statementBlock = parseBlock(symbolTable);
         return new WhileNode(conditionStatement, statementBlock, isDoWhile);
@@ -342,35 +423,40 @@ public class Parser {
     private IfNode parseIfStatement(SymbolTable symbolTable) throws ParseException {
         lexer.strictMatch(Type.IF);
         lexer.strictMatch(Type.OPEN_BRACKET);
-        BinaryExpression conditionStatement = parseBinaryExpression(symbolTable);
+        BooleanExpression conditionStatement = parseBooleanExpression(symbolTable);
         lexer.strictMatch(Type.CLOSE_BRACKET);
         StatementBlock ifBlock = parseBlock(symbolTable);
         IfNode rootElseBlock = null;
-        if (lexer.match(Type.ELSE)) {
-            lexer.strictMatch(Type.ELSE);
-            StatementBlock elseBlock = parseBlock(symbolTable);
-            rootElseBlock = new IfNode(null, elseBlock, null);
-        } else if (lexer.match(Type.ELSE_IF)) {
-            IfNode leafElseIf = null;
-            while(lexer.match(Type.ELSE_IF)) {
-                lexer.strictMatch(Type.ELSE_IF);
-                lexer.strictMatch(Type.OPEN_BRACKET);
-                BinaryExpression elseIfExpression = parseBinaryExpression(symbolTable);
-                lexer.strictMatch(Type.CLOSE_BRACKET);
-                StatementBlock statementBlock = parseBlock(symbolTable);
-                if(rootElseBlock == null) {
-                    rootElseBlock = new IfNode(conditionStatement, statementBlock, null);
-                    leafElseIf = rootElseBlock;
-                } else {
-                    IfNode inner = new IfNode(elseIfExpression, statementBlock, null);
-                    leafElseIf.setElseBlock(inner);
-                    leafElseIf = inner;
+        if(lexer.isMatch(Type.INTERNAL_CALL_PREFIX)) {
+            lexer.strictMatch(Type.INTERNAL_CALL_PREFIX);
+
+            if (lexer.isMatch(Type.ELSE)) {
+                lexer.strictMatch(Type.ELSE);
+                StatementBlock elseBlock = parseBlock(symbolTable);
+                rootElseBlock = new IfNode(null, elseBlock, null);
+            } else if (lexer.isMatch(Type.ELSE_IF)) {
+                IfNode leafElseIf = null;
+                while (lexer.isMatch(Type.ELSE_IF)) {
+                    lexer.strictMatch(Type.INTERNAL_CALL_PREFIX);
+                    lexer.strictMatch(Type.ELSE_IF);
+                    lexer.strictMatch(Type.OPEN_BRACKET);
+                    BooleanExpression elseIfExpression = parseBooleanExpression(symbolTable);
+                    lexer.strictMatch(Type.CLOSE_BRACKET);
+                    StatementBlock statementBlock = parseBlock(symbolTable);
+                    if (rootElseBlock == null) {
+                        rootElseBlock = new IfNode(conditionStatement, statementBlock, null);
+                        leafElseIf = rootElseBlock;
+                    } else {
+                        IfNode inner = new IfNode(elseIfExpression, statementBlock, null);
+                        leafElseIf.setElseBlock(inner);
+                        leafElseIf = inner;
+                    }
                 }
+                lexer.strictMatch(Type.ELSE);
+                StatementBlock elseBlock = parseBlock(symbolTable);
+                IfNode finalElse = new IfNode(null, elseBlock, null);
+                leafElseIf.setElseBlock(finalElse);
             }
-            lexer.strictMatch(Type.ELSE);
-            StatementBlock elseBlock = parseBlock(symbolTable);
-            IfNode finalElse = new IfNode(null, elseBlock, null);
-            leafElseIf.setElseBlock(finalElse);
         }
         return new IfNode(conditionStatement, ifBlock, rootElseBlock);
     }

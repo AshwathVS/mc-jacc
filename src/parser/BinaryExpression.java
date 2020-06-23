@@ -1,10 +1,10 @@
 package parser;
 
-public class BinaryExpression implements RhsExpression {
+public class BinaryExpression implements RhsExpression, TreeExpression<RhsExpression, ArithmeticOperator> {
     private RhsExpression left, right;
-    private Operator operator;
+    private ArithmeticOperator operator;
 
-    public BinaryExpression(RhsExpression left, RhsExpression right, Operator operator) {
+    public BinaryExpression(RhsExpression left, RhsExpression right, ArithmeticOperator operator) {
         this.left = left;
         this.right = right;
         this.operator = operator;
@@ -22,7 +22,7 @@ public class BinaryExpression implements RhsExpression {
         return right;
     }
 
-    public Operator getOperator() {
+    public ArithmeticOperator getOperator() {
         return operator;
     }
 

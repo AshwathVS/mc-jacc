@@ -1,42 +1,46 @@
 package parser.symbolTable;
 
+import parser.DataType;
+import parser.FunctionDeclaration;
+import parser.StatementBlock;
 import parser.VariableDeclaration;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class FunctionSymbolTableEntry {
-    String functionName;
 
-    List<VariableDeclaration> arguments;
+    private String functionName;
 
-    public FunctionSymbolTableEntry(String functionName, Map<String, VariableDeclaration> arguments) {
-        this.functionName = functionName;
-        this.arguments = new ArrayList<>(10);
-        for(Map.Entry<String, VariableDeclaration> entry : arguments.entrySet()) {
-            this.arguments.add(entry.getValue());
-        }
+    private Map<String, VariableDeclaration> arguments;
+
+    private DataType returnType;
+
+    private StatementBlock functionBlock;
+
+    public FunctionSymbolTableEntry(FunctionDeclaration functionDeclaration) {
+        this.functionName = functionDeclaration.getFunctionName();
+        this.arguments = functionDeclaration.getArguments();
+        this.returnType = functionDeclaration.getReturnType();
+        this.functionBlock = functionDeclaration.getFunctionBlock();
     }
 
     public String getFunctionName() {
         return functionName;
     }
 
-    public List<VariableDeclaration> getArguments() {
+    public Map<String, VariableDeclaration> getArguments() {
         return arguments;
+    }
+
+    public DataType getReturnType() {
+        return returnType;
+    }
+
+    public StatementBlock getFunctionBlock() {
+        return functionBlock;
     }
 
     public Integer getArgumentCount() {
         return this.arguments.size();
     }
-
-    public void setFunctionName(String functionName) {
-        this.functionName = functionName;
-    }
-
-    public void setArguments(List<VariableDeclaration> arguments) {
-        this.arguments = arguments;
-    }
-
 }

@@ -91,6 +91,8 @@ public enum Type {
     /**
      * Additional Operators:
      */
+    FUNCTION_CALL_PREFIX,
+    INTERNAL_CALL_PREFIX,
     AT,
     DOLLAR,
     RETURN,
@@ -119,7 +121,6 @@ public enum Type {
      */
     ID,
     INTEGER_LITERAL,
-    STRING_LITERAL,
     CHARACTER_LITERAL,
     BOOLEAN_LITERAL,
     DOUBLE_LITERAL,;

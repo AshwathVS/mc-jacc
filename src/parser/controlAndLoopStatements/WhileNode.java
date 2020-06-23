@@ -1,14 +1,14 @@
 package parser.controlAndLoopStatements;
 
 import parser.BaseStatementType;
-import parser.BinaryExpression;
+import parser.BooleanExpression;
 import parser.StatementBlock;
 
 public class WhileNode extends BaseControlStatement {
 
     private boolean isDoWhile;
 
-    public WhileNode(BinaryExpression conditionStatement, StatementBlock block, boolean isDoWhile) {
+    public WhileNode(BooleanExpression conditionStatement, StatementBlock block, boolean isDoWhile) {
         super(conditionStatement, block);
         this.isDoWhile = isDoWhile;
     }

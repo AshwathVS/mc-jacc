@@ -1,4 +1,5 @@
 import lexer.LexerWrapper;
+import parser.ParseException;
 import parser.Parser;
 import parser.ProgramNode;
 
@@ -15,7 +16,11 @@ public class Main {
 //            }
 //        }
         Parser parser = new Parser(lexer);
-        ProgramNode node = parser.parse();
-        System.out.println(node);
+        try {
+            ProgramNode node = parser.parse();
+            System.out.println(node);
+        } catch(Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }

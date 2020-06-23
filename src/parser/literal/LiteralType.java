@@ -14,8 +14,6 @@ public enum LiteralType {
             switch (type) {
                 case INTEGER_LITERAL:
                     return INTEGER_LITERAL;
-                case STRING_LITERAL:
-                    return STRING_LITERAL;
                 case CHARACTER_LITERAL:
                     return CHARACTER_LITERAL;
                 case BOOLEAN_LITERAL:
@@ -27,8 +25,8 @@ public enum LiteralType {
         return null;
     }
 
-    public static Type[] getLiteralTypes() {
-        return new Type[] {Type.INTEGER_LITERAL, Type.STRING_LITERAL, Type.CHARACTER_LITERAL, Type.BOOLEAN_LITERAL, Type.DOUBLE_LITERAL};
+    public static Type[] getArithmeticLiteralTypes() {
+        return new Type[] {Type.INTEGER_LITERAL, Type.CHARACTER_LITERAL, Type.DOUBLE_LITERAL};
     }
 
 }

@@ -24,9 +24,6 @@ public abstract class Literal<T> implements RhsExpression {
             case INTEGER_LITERAL: {
                 return new IntegerLiteral(Integer.parseInt(token.getValue()));
             }
-            case STRING_LITERAL: {
-                return new StringLiteral(token.getValue());
-            }
         }
         return null;
     }

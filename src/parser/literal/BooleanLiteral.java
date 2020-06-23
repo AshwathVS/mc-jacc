@@ -2,7 +2,7 @@ package parser.literal;
 
 public class BooleanLiteral extends Literal<Boolean> {
 
-    boolean value;
+    private boolean value;
 
     public BooleanLiteral(boolean value) {
         this.value = value;

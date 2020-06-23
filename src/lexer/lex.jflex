@@ -33,9 +33,6 @@ char\s {
 bool\s {
     return new Token(Type.BOOLEAN, yyline, yycolumn);
 }
-string\s {
-    return new Token(Type.STRING, yyline, yycolumn);
-}
 void\s {
     return new Token(Type.VOID, yyline, yycolumn);
 }
@@ -231,6 +228,14 @@ DO_WHILE
 }
 
 /** Additional Operators: */
+\$\.
+{
+    return new Token(Type.FUNCTION_CALL_PREFIX, yyline, yycolumn);
+}
+\@\.
+{
+    return new Token(Type.INTERNAL_CALL_PREFIX, yyline, yycolumn);
+}
 \@
 {
     return new Token(Type.AT, yyline, yycolumn);
@@ -331,10 +336,6 @@ return\s {
 
 {int_number} {
     return new Token(Type.INTEGER_LITERAL, yyline, yycolumn, yytext());
-}
-
-{text} {
-    return new Token(Type.STRING_LITERAL, yyline, yycolumn, yytext());
 }
 
 {character} {

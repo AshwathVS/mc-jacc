@@ -6,8 +6,11 @@ import parser.RhsExpression;
 import parser.VariableDeclaration;
 
 public class VariableSymbolTableEntry {
+
     String variableName;
+
     DataType dataType;
+
     RhsExpression value;
 
     public VariableSymbolTableEntry(String variableName, DataType dataType, RhsExpression value) {

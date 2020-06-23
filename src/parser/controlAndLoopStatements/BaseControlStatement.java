@@ -1,15 +1,15 @@
 package parser.controlAndLoopStatements;
 
 import parser.BaseStatement;
-import parser.BinaryExpression;
+import parser.BooleanExpression;
 import parser.StatementBlock;
 
 public abstract class BaseControlStatement implements BaseStatement {
     private StatementBlock statementBlock;
 
-    private BinaryExpression conditionStatement;
+    private BooleanExpression conditionStatement;
 
-    public BaseControlStatement(BinaryExpression conditionStatement, StatementBlock statementBlock) {
+    public BaseControlStatement(BooleanExpression conditionStatement, StatementBlock statementBlock) {
         this.statementBlock = statementBlock;
         this.conditionStatement = conditionStatement;
     }
@@ -18,7 +18,7 @@ public abstract class BaseControlStatement implements BaseStatement {
         return statementBlock;
     }
 
-    public BinaryExpression getConditionStatement() {
+    public BooleanExpression getConditionStatement() {
         return conditionStatement;
     }
 }

@@ -7,7 +7,7 @@ public class ForNode extends BaseControlStatement {
 
     private VariableAssignment incrementNode;
 
-    public ForNode(BaseStatement initialisationNode, BinaryExpression conditionStatement, VariableAssignment incrementNode, StatementBlock blockNode) {
+    public ForNode(BaseStatement initialisationNode, BooleanExpression conditionStatement, VariableAssignment incrementNode, StatementBlock blockNode) {
         super(conditionStatement, blockNode);
         this.initialisationNode = initialisationNode;
         this.incrementNode = incrementNode;

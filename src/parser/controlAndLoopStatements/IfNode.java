@@ -1,13 +1,13 @@
 package parser.controlAndLoopStatements;
 
 import parser.BaseStatementType;
-import parser.BinaryExpression;
+import parser.BooleanExpression;
 import parser.StatementBlock;
 
 public class IfNode extends BaseControlStatement {
     private IfNode elseBlock;
 
-    public IfNode(BinaryExpression conditionStatement, StatementBlock ifBlock, IfNode elseBlock) {
+    public IfNode(BooleanExpression conditionStatement, StatementBlock ifBlock, IfNode elseBlock) {
         super(conditionStatement, ifBlock);
         this.elseBlock = elseBlock;
     }

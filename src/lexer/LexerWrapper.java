@@ -2,6 +2,7 @@ package lexer;
 
 import core.Token;
 import core.Type;
+import parser.ParseException;
 
 import javax.print.FlavorException;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class LexerWrapper {
         } else return null;
     }
 
-    public Token strictMatch(Type type) {
+    public Token strictMatch(Type type) throws NullPointerException {
         Token front = top();
         if(null != front && type.equals(front.getType())) return nextToken();
         else {
@@ -57,6 +58,9 @@ public class LexerWrapper {
             }
 
             // log error
+            if(Type.EOF.equals(front.getType())) {
+                throw new NullPointerException("Abrupt program end detected at [" + front.getLineNumber() + ":" + front.getColumnNumber() + "]");
+            }
             this.errors.add("Expected token of type (" + type.toString() + "), but found (" + front.getType() + ") at [" + lineNumber + ":" + columnNumber + "]");
 
             // return false token
@@ -64,7 +68,7 @@ public class LexerWrapper {
         }
     }
 
-    public boolean match(Type... types) {
+    public boolean isMatch(Type... types) {
         Token front = top();
         if(null != front) {
             for(Type type : types) {
@@ -74,7 +78,7 @@ public class LexerWrapper {
         return false;
     }
 
-    public boolean match(List<Type> types) {
+    public boolean isMatch(List<Type> types) {
         Token front = top();
         if(null != front) {
             for(Type type : types) {
