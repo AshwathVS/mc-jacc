@@ -1,13 +1,13 @@
 ## mc-jacc
 Just another compiler with weird syntax. (extension .mc)
 
-####Variable Declaration <br>
+#### Variable Declaration <br>
 Variable declaration must be done inside '<' and '>'. If you want to assign a value, you can put the value inside brackets.
 ```text
 <int i(100)>
 ```
 
-####Function Declaration <br>
+#### Function Declaration <br>
 Function declaration must be done within double **<** and **>** operators. <br>
 Function call can be done with '$.' followed by function name.
 ```text
@@ -17,14 +17,14 @@ Function call can be done with '$.' followed by function name.
 }
 ``` 
 
-####Start Function <br>
+#### Start Function <br>
 'initiate' is the start function which will not accept any arguments.
 ```text
 <<int initiate()>> {
     ...
 }
 ```
-####Decision and looping statements <br>
+#### Decision and looping statements <br>
 All these statements needs to be called with '@.' prefix. <br>
 **If:**
 ```text
