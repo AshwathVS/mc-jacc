@@ -5,6 +5,7 @@ import core.Token;
 import core.Type;
 import lexer.LexerWrapper;
 import parser.controlAndLoopStatements.*;
+import parser.literal.BooleanLiteral;
 import parser.literal.Literal;
 import parser.literal.LiteralType;
 import parser.symbolTable.FunctionSymbolTableEntry;
@@ -106,8 +107,8 @@ public class Parser {
         }
     }
 
-    private VariableDeclaration parseVariableDeclaration(SymbolTable symbolTable) {
-        BinaryExpression expression = null;
+    private VariableDeclaration parseVariableDeclaration(SymbolTable symbolTable) throws ParseException {
+        RhsExpression expression = null;
         lexer.strictMatch(Type.LESS_THAN);
         DataType dataType = parseDataType();
         String variableName = parseIdentifier().getValue();
@@ -120,7 +121,12 @@ public class Parser {
                 lexer.strictMatch(Type.GREATER_THAN);
             } else if (Type.OPEN_BRACKET.equals(top.getType())) {
                 lexer.strictMatch(Type.OPEN_BRACKET);
-                expression = parseBinaryExpression(symbolTable);
+                if(DataType.BOOLEAN.equals(dataType)) {
+                    expression = parseBooleanExpression(symbolTable);
+                } else {
+                    expression = parseBinaryExpression(symbolTable);
+                }
+
                 lexer.strictMatch(Type.CLOSE_BRACKET);
                 lexer.strictMatch(Type.GREATER_THAN);
             } else {
@@ -171,28 +177,41 @@ public class Parser {
     }
 
     private RelationalExpression parseRelationalExpression(SymbolTable symbolTable) throws ParseException {
-        BinaryExpression rLeft = parseBinaryExpression(symbolTable), rRight = null;
+        BinaryExpression rLeft = null, rRight = null;
         RelationalOperator operator = null;
+
+        if(lexer.isMatch(Type.BOOLEAN_LITERAL)) {
+            rLeft = new BinaryExpression(Literal.parseTokenToLiteral(lexer.nextToken()));
+        } else {
+            rLeft = parseBinaryExpression(symbolTable);
+        }
+
         if(lexer.isMatch(RelationalOperator.getTypes())) {
             operator = RelationalOperator.getOperator(lexer.nextToken().getType());
-            rRight = parseBinaryExpression(symbolTable);
+
+            if(lexer.isMatch(Type.BOOLEAN_LITERAL)) {
+                rRight = new BinaryExpression(Literal.parseTokenToLiteral(lexer.nextToken()));
+            } else {
+                rRight = parseBinaryExpression(symbolTable);
+            }
+
         } else {
 
             // if there is no relational operator, left should be a boolean literal or a function call returning boolean or a boolean identifier
             boolean validBooleanExp = false;
             RhsExpression left = rLeft.getLeft();
             BinaryExpressionType type = left.getExpressionType();
-            if(BinaryExpressionType.LITERAL.equals(left)) {
+            if(BinaryExpressionType.LITERAL.equals(type)) {
                 if(LiteralType.BOOLEAN_LITERAL.equals(((Literal) left).getLiteralType())) {
                     validBooleanExp = true;
                 }
-            } else if(BinaryExpressionType.FUNCTION_CALL.equals(left)) {
+            } else if(BinaryExpressionType.FUNCTION_CALL.equals(type)) {
                 FunctionCall functionCall = (FunctionCall) left;
                 FunctionSymbolTableEntry functionDeclaration = symbolTable.getFunction(functionCall.getFunctionName(), functionCall.getArguments().size()).value;
                 if(functionDeclaration.getReturnType().equals(DataType.BOOLEAN)) {
                     validBooleanExp = true;
                 }
-            } else if(BinaryExpressionType.IDENTIFIER.equals(left)) {
+            } else if(BinaryExpressionType.IDENTIFIER.equals(type)) {
                 IdentifierNode identifierNode = (IdentifierNode) left;
                 if(DataType.BOOLEAN.equals(identifierNode.getDataType())) {
                     validBooleanExp = true;
