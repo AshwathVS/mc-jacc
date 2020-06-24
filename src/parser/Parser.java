@@ -180,21 +180,11 @@ public class Parser {
         BinaryExpression rLeft = null, rRight = null;
         RelationalOperator operator = null;
 
-        if(lexer.isMatch(Type.BOOLEAN_LITERAL)) {
-            rLeft = new BinaryExpression(Literal.parseTokenToLiteral(lexer.nextToken()));
-        } else {
-            rLeft = parseBinaryExpression(symbolTable);
-        }
+        rLeft = parseBinaryOrBooleanExpBasedOnLookup(symbolTable);
 
         if(lexer.isMatch(RelationalOperator.getTypes())) {
             operator = RelationalOperator.getOperator(lexer.nextToken().getType());
-
-            if(lexer.isMatch(Type.BOOLEAN_LITERAL)) {
-                rRight = new BinaryExpression(Literal.parseTokenToLiteral(lexer.nextToken()));
-            } else {
-                rRight = parseBinaryExpression(symbolTable);
-            }
-
+            rRight = parseBinaryOrBooleanExpBasedOnLookup(symbolTable);
         } else {
 
             // if there is no relational operator, left should be a boolean literal or a function call returning boolean or a boolean identifier
@@ -223,6 +213,14 @@ public class Parser {
             }
         }
         return new RelationalExpression(rLeft, rRight, operator);
+    }
+
+    private BinaryExpression parseBinaryOrBooleanExpBasedOnLookup(SymbolTable symbolTable) {
+        if(lexer.isMatch(Type.BOOLEAN_LITERAL)) {
+            return new BinaryExpression(Literal.parseTokenToLiteral(lexer.nextToken()));
+        } else {
+            return parseBinaryExpression(symbolTable);
+        }
     }
 
     private BinaryExpression parseBinaryExpression(SymbolTable symbolTable) {
