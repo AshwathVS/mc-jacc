@@ -7,7 +7,7 @@ import java.io.FileReader;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        FileReader fileReader = new FileReader("C:\\Users\\Ashwath\\Documents\\Compiler Design\\lex\\inp.in");
+        FileReader fileReader = new FileReader("C:\\Users\\Ashwath\\Documents\\Compiler Design\\lex\\inp.mc");
         LexerWrapper lexer = new LexerWrapper(fileReader);
 //        while(!lexer.eof()) {
 //            Token token = lexer.nextToken();

@@ -1,5 +1,11 @@
 ## mc-jacc
-Just another compiler with weird syntax. (extension .mc)
+Just another compiler with weird syntax (extension .mc). It is still in front end stage.
+
+Things to do:
+```text
+1. Intermediate Code Generation
+2. Backend code generation
+```
 
 #### Variable Declaration <br>
 Variable declaration must be done inside '<' and '>'. If you want to assign a value, you can put the value inside brackets.
