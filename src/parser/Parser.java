@@ -12,6 +12,7 @@ import parser.symbolTable.SymbolTable;
 import parser.symbolTable.VariableSymbolTableEntry;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,16 +45,20 @@ public class Parser {
                         throw new ParseException(ParseErrorMessages.DUPLICATE_VARIABLE_USED + " " + variableDeclaration.getLhs().getIdentifierName());
                     }
                 } else {
-                    throw new ParseException("Expected character found at [" + token.getLineNumber() + ":" + token.getColumnNumber() + "]");
+                    throw new ParseException("Unexpected character found at [" + token.getLineNumber() + ":" + token.getColumnNumber() + "]");
                 }
             }
-            if(null != lexer.getErrors()) throw new ParseException(lexer.getErrors());
+            if(null != lexer.getErrors() && !lexer.getErrors().isEmpty()) throw new ParseException(lexer.getErrors());
             return programNode;
         } catch(ParseException | NullPointerException ex) {
             if(ex instanceof ParseException) {
-                Set<String> errorMessages = ((ParseException) ex).getErrorMessages();
-                if(ex.getMessage()!= null) lexer.addError(ex.getMessage());
-                throw new ParseException(errorMessages);
+                ParseException parseException = (ParseException) ex;
+                Set<String> errors = new HashSet<>(50);
+                errors.add(parseException.getMessage());
+                if(!lexer.getErrors().isEmpty()) {
+                    errors.addAll(lexer.getErrors());
+                }
+                throw new ParseException(errors);
             } else {
                 throw new NullPointerException("Abrupt end of program detected!");
             }
@@ -72,7 +77,7 @@ public class Parser {
         while(!lexer.eof() && !Type.CLOSE_BRACKET.equals(lexer.top().getType())) {
             VariableDeclaration variableDeclaration = parseVariableDeclaration(functionDeclaration);
             functionDeclaration.addArgument(variableDeclaration);
-            symbolTable.addVariable(new VariableSymbolTableEntry(variableDeclaration));
+            functionDeclaration.addVariable(new VariableSymbolTableEntry(variableDeclaration));
             if(lexer.isMatch(Type.COMMA)) lexer.nextToken();
         }
 
@@ -173,17 +178,23 @@ public class Parser {
             rRight = parseBinaryExpression(symbolTable);
         } else {
 
-            // if there is no relational operator, left should be a boolean literal or a function call returning null
+            // if there is no relational operator, left should be a boolean literal or a function call returning boolean or a boolean identifier
             boolean validBooleanExp = false;
             RhsExpression left = rLeft.getLeft();
-            if(BinaryExpressionType.LITERAL.equals(left.getExpressionType())) {
+            BinaryExpressionType type = left.getExpressionType();
+            if(BinaryExpressionType.LITERAL.equals(left)) {
                 if(LiteralType.BOOLEAN_LITERAL.equals(((Literal) left).getLiteralType())) {
                     validBooleanExp = true;
                 }
-            } else if(BinaryExpressionType.FUNCTION_CALL.equals(left.getExpressionType())) {
+            } else if(BinaryExpressionType.FUNCTION_CALL.equals(left)) {
                 FunctionCall functionCall = (FunctionCall) left;
                 FunctionSymbolTableEntry functionDeclaration = symbolTable.getFunction(functionCall.getFunctionName(), functionCall.getArguments().size()).value;
                 if(functionDeclaration.getReturnType().equals(DataType.BOOLEAN)) {
+                    validBooleanExp = true;
+                }
+            } else if(BinaryExpressionType.IDENTIFIER.equals(left)) {
+                IdentifierNode identifierNode = (IdentifierNode) left;
+                if(DataType.BOOLEAN.equals(identifierNode.getDataType())) {
                     validBooleanExp = true;
                 }
             }
@@ -286,6 +297,7 @@ public class Parser {
         if (top == null) throw new ParseException("Abrupt end of program detected");
         List<BaseStatement> statements = new ArrayList<>(20);
         StatementBlock statementBlock = new StatementBlock(symbolTable);
+        boolean isReturnStatementReached = false;
         while(!Type.CLOSE_CURLY_BRACE.equals(top.getType())) {
             BaseStatement baseStatement = null;
 
@@ -340,6 +352,7 @@ public class Parser {
             else if(Type.RETURN.equals(top.getType())) {
                 FunctionReturn functionReturn = parseFunctionReturn(statementBlock);
                 baseStatement = functionReturn;
+                isReturnStatementReached = true;
             }
 
             // function call
@@ -357,11 +370,19 @@ public class Parser {
             }
 
             statements.add(baseStatement);
+
+            if(isReturnStatementReached) break;
+
             top = lexer.top();
             if(top == null) {
                 throw new ParseException("Abrupt end of program detected");
             } else if (Type.CLOSE_CURLY_BRACE.equals(top.getType())) {
                 break;
+            }
+        }
+        if(isReturnStatementReached) {
+            if (!lexer.isMatch(Type.CLOSE_CURLY_BRACE)) {
+                lexer.addError("Unreachable code found at [" + lexer.top().getLineNumber() + ":" + lexer.top().getColumnNumber() + "]");
             }
         }
         lexer.strictMatch(Type.CLOSE_CURLY_BRACE);

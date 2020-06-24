@@ -1,4 +1,5 @@
-package intermediateCodeGenerater;
+package intermediateCodeGenerator;
 
 public class Quadruple {
+    
 }

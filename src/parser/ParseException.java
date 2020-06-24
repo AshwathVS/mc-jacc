@@ -3,7 +3,7 @@ package parser;
 import java.util.*;
 
 public class ParseException extends Exception {
-    boolean isList = false;
+    private boolean isList = false;
 
     private Set<String> errorMessages;
 
@@ -42,5 +42,9 @@ public class ParseException extends Exception {
     @Override
     public String getLocalizedMessage() {
         return this.getMessage();
+    }
+
+    public boolean multipleErrors() {
+        return this.isList;
     }
 }
