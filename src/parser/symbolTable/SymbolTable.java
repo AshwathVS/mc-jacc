@@ -44,7 +44,7 @@ public class SymbolTable {
     }
 
     public Integer addFunction(FunctionSymbolTableEntry functionSymbolTableEntry) {
-        String internalFunctionName = functionSymbolTableEntry.getFunctionName() + functionSymbolTableEntry.getArgumentCount();
+        String internalFunctionName = functionSymbolTableEntry.getFunctionName() + "_" + functionSymbolTableEntry.getArgumentCount();
         if(functionNames.containsKey(internalFunctionName)) {
             return null;
         } else {
@@ -55,17 +55,21 @@ public class SymbolTable {
     }
 
     public Pair<Integer, VariableSymbolTableEntry> getVariable(String variableName) {
+        return getVariable(variableName, true);
+    }
+
+    public Pair<Integer, VariableSymbolTableEntry> getVariable(String variableName, boolean traverseTillParent) {
         if(variableNames.containsKey(variableName)) {
             Integer id = variableNames.get(variableName);
             VariableSymbolTableEntry variableSymbolTableEntry = variableSymbolTable.get(id);
             return new Pair<>(id, variableSymbolTableEntry);
         }
-        else if (null != parent) return parent.getVariable(variableName);
+        else if (null != parent && traverseTillParent) return parent.getVariable(variableName);
         else return null;
     }
 
     public Pair<Integer, FunctionSymbolTableEntry> getFunction(String functionName, Integer argumentCount) {
-        return getFunction(functionName + argumentCount);
+        return getFunction(functionName + "_" + argumentCount);
     }
 
     protected Pair<Integer, FunctionSymbolTableEntry> getFunction(String internalFunctionName) {
@@ -77,11 +81,11 @@ public class SymbolTable {
         else return null;
     }
 
-    public boolean checkFunctionInScope(String functionName, Integer argumentCount) {
-        return getFunction(functionName, argumentCount) != null;
+    public boolean checkVariableInScope(String variableName) {
+        return getVariable(variableName, false) != null;
     }
 
-    public boolean checkVariableInScope(String variableName) {
-        return getVariable(variableName) != null;
+    public boolean checkVariable(String variableName) {
+        return getVariable(variableName, true) != null;
     }
 }

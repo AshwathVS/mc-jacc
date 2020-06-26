@@ -26,6 +26,10 @@ public class BinaryExpression implements RhsExpression, TreeExpression<RhsExpres
         return operator;
     }
 
+    public void setOperator(ArithmeticOperator operator) {
+        this.operator = operator;
+    }
+
     @Override
     public BinaryExpressionType getExpressionType() {
         return BinaryExpressionType.BINARY_EXPRESSION;

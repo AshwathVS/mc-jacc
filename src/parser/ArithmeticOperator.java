@@ -27,7 +27,7 @@ public enum ArithmeticOperator {
         this.operator = operator;
     }
 
-    public static ArithmeticOperator getPrecedenceForOperator(Type type) {
+    public static ArithmeticOperator getOperatorFromType(Type type) {
         if (null == operatorPrecedenceMap) {
             operatorPrecedenceMap = new HashMap<>(20);
             for (ArithmeticOperator iter : ArithmeticOperator.values()) {

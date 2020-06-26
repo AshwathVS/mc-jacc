@@ -5,7 +5,6 @@ import core.Token;
 import core.Type;
 import lexer.LexerWrapper;
 import parser.controlAndLoopStatements.*;
-import parser.literal.BooleanLiteral;
 import parser.literal.Literal;
 import parser.literal.LiteralType;
 import parser.symbolTable.FunctionSymbolTableEntry;
@@ -133,6 +132,7 @@ public class Parser {
                 lexer.addError("Invalid variable declaration found at: " + "[" + top.getLineNumber() + ":" + top.getColumnNumber() +"]");
             }
         }
+        if(symbolTable.checkVariableInScope(variableName)) lexer.addError("Duplicate variable name found (" + variableName + ")");
         return new VariableDeclaration(new IdentifierNode(variableName, dataType, null), expression);
     }
 
@@ -229,16 +229,16 @@ public class Parser {
 
         if(lexer.isMatch(ArithmeticOperator.getOperatorsWithGreaterPrecedence(start.getPrecedence()))) {
             Token token = lexer.top();
-            start = ArithmeticOperator.getPrecedenceForOperator(token.getType());
+            start = ArithmeticOperator.getOperatorFromType(token.getType());
         }
 
-        return getBinaryExpression(symbolTable, start, left);
+        return leftRecurseForExpression(symbolTable, start, left);
     }
 
-    private BinaryExpression getBinaryExpression(SymbolTable symbolTable, ArithmeticOperator start, BinaryExpression left) {
+    private BinaryExpression leftRecurseForExpression(SymbolTable symbolTable, ArithmeticOperator start, BinaryExpression left) {
         while(null != start && lexer.isMatch(ArithmeticOperator.getOperatorsWithEqualPrecedence(start.getPrecedence()))) {
             Token token = lexer.nextToken();
-            start = ArithmeticOperator.getPrecedenceForOperator(token.getType());
+            start = ArithmeticOperator.getOperatorFromType(token.getType());
             BinaryExpression right = parseBinaryTerm(symbolTable, start.getPrecedence());
             left = new BinaryExpression(left, right, start);
         }
@@ -253,28 +253,37 @@ public class Parser {
         ArithmeticOperator start = null;
         if(lexer.isMatch(ArithmeticOperator.getOperatorsWithGreaterPrecedence(previousPrecedence))) {
             Token token = lexer.top();
-            start = ArithmeticOperator.getPrecedenceForOperator(token.getType());
+            start = ArithmeticOperator.getOperatorFromType(token.getType());
         }
-        return getBinaryExpression(symbolTable, start, left);
+        return leftRecurseForExpression(symbolTable, start, left);
     }
 
     private BinaryExpression parseFactor(SymbolTable symbolTable) {
+
+        boolean isSignedFactorFound = false;
+        Token sign = null;
+        BinaryExpression returnExp = null;
 
         Token top = lexer.top();
         if(top == null) {
             lexer.addError("Abrupt definition of binary expression");
             return null;
+        } else {
+            if(lexer.isMatch(Type.ADD, Type.SUBTRACT)) {
+                isSignedFactorFound = true;
+                sign = lexer.nextToken();
+            }
         }
 
         // literal match
-        else if(lexer.isMatch(LiteralType.getArithmeticLiteralTypes())) {
+        if(lexer.isMatch(LiteralType.getArithmeticLiteralTypes())) {
             Literal literal = Literal.parseTokenToLiteral(lexer.nextToken());
-            return new BinaryExpression(literal);
+            returnExp = new BinaryExpression(literal);
         }
         // Function call
         else if (null != top && Type.FUNCTION_CALL_PREFIX.equals(top.getType())) {
             FunctionCall functionCall = parseFunctionCall(symbolTable);
-            return new BinaryExpression(functionCall);
+            returnExp = new BinaryExpression(functionCall);
         }
 
         // Bracketed expression
@@ -282,15 +291,20 @@ public class Parser {
             lexer.strictMatch(Type.OPEN_BRACKET);
             BinaryExpression expression = parseBinaryExpression(symbolTable);
             lexer.strictMatch(Type.CLOSE_BRACKET);
-            return expression;
+            returnExp = expression;
         }
 
         // Identifier usage
         else {
             Token variable = parseIdentifier();
             IdentifierNode identifierNode = getIdentifierNode(variable, symbolTable);
-            return new BinaryExpression(identifierNode);
+            returnExp = new BinaryExpression(identifierNode);
         }
+
+        if(isSignedFactorFound) {
+            returnExp.setOperator(ArithmeticOperator.getOperatorFromType(sign.getType()));
+        }
+        return returnExp;
     }
 
     private FunctionCall parseFunctionCall(SymbolTable symbolTable) {
@@ -507,9 +521,15 @@ public class Parser {
         return new VariableAssignment(identifierNode, rhs);
     }
 
+    /**
+     * This method is used to find identifiers that have already been declared.
+     * @param identifierToken
+     * @param symbolTable
+     * @return
+     */
     private IdentifierNode getIdentifierNode(Token identifierToken, SymbolTable symbolTable) {
         String identifierName = identifierToken.getValue();
-        if(symbolTable.checkVariableInScope(identifierName)) {
+        if(symbolTable.checkVariable(identifierName)) {
             Pair<Integer, VariableSymbolTableEntry> variableSymbolTableEntryPair = symbolTable.getVariable(identifierName);
             return new IdentifierNode(variableSymbolTableEntryPair.value.getVariableName(), variableSymbolTableEntryPair.value.getDataType(), variableSymbolTableEntryPair.key);
         } else {

@@ -97,7 +97,7 @@ void\s {
 {
     return new Token(Type.B_RIGHT_SHIFT_ZERO, yyline, yycolumn);
 }
-
+*/
 
 /** Relational Operators: */
 \=\=|EE
