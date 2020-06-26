@@ -1,6 +1,6 @@
 package parser;
 
-public enum BinaryExpressionType {
+public enum ExpressionType {
     FUNCTION_CALL,
     IDENTIFIER,
     LITERAL,

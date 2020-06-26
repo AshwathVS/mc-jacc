@@ -8,23 +8,26 @@ import java.util.List;
 import java.util.Map;
 
 public enum ArithmeticOperator {
-    NULL(Integer.MAX_VALUE, null),
-    MODULUS(1, Type.MODULUS),
-    EXPONENTIAL_OPERATOR(2, Type.B_XOR),
-    MULTIPLICATION(3, Type.MULTIPLY),
-    DIVISION(3, Type.DIVIDE),
-    ADDITION(4, Type.ADD),
-    SUBTRACTION(4, Type.SUBTRACT),;
+    NULL(Integer.MAX_VALUE, null, null),
+    MODULUS(1, Type.MODULUS, "%"),
+    EXPONENTIAL_OPERATOR(2, Type.B_XOR, "^"),
+    MULTIPLICATION(3, Type.MULTIPLY, "*"),
+    DIVISION(3, Type.DIVIDE, "/"),
+    ADDITION(4, Type.ADD, "+"),
+    SUBTRACTION(4, Type.SUBTRACT, "-"),;
 
     private int precedence;
 
     private Type operator;
 
+    private String value;
+
     private static Map<Type, ArithmeticOperator> operatorPrecedenceMap;
 
-    ArithmeticOperator(int precedence, Type operator) {
+    ArithmeticOperator(int precedence, Type operator, String value) {
         this.precedence = precedence;
         this.operator = operator;
+        this.value = value;
     }
 
     public static ArithmeticOperator getOperatorFromType(Type type) {
@@ -45,14 +48,6 @@ public enum ArithmeticOperator {
         return operators;
     }
 
-    public int getPrecedence() {
-        return precedence;
-    }
-
-    public Type getOperator() {
-        return this.operator;
-    }
-
     public static List<Type> getOperatorsWithGreaterPrecedence(int precedence) {
         List<Type> operators = new ArrayList<>(10);
         for(ArithmeticOperator iter: ArithmeticOperator.values()) {
@@ -61,5 +56,17 @@ public enum ArithmeticOperator {
             }
         }
         return operators;
+    }
+
+    public int getPrecedence() {
+        return precedence;
+    }
+
+    public Type getOperator() {
+        return this.operator;
+    }
+
+    public String value() {
+        return value;
     }
 }

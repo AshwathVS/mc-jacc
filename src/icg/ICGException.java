@@ -1,4 +1,4 @@
-package intermediateCodeGenerator;
+package icg;
 
 public class ICGException extends Exception {
     public ICGException(String message) {

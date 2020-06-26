@@ -13,8 +13,8 @@ public class BooleanExpression implements RhsExpression, TreeExpression<BooleanE
     }
 
     @Override
-    public BinaryExpressionType getExpressionType() {
-        return BinaryExpressionType.BOOLEAN_EXPRESSION;
+    public ExpressionType getExpressionType() {
+        return ExpressionType.BOOLEAN_EXPRESSION;
     }
 
     public BooleanExpression getLeft() {

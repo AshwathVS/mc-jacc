@@ -1,4 +1,4 @@
-package intermediateCodeGenerator;
+package icg;
 
 import parser.DataType;
 

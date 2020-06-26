@@ -3,12 +3,19 @@ package parser;
 import core.Type;
 
 public enum DataType {
-    INTEGER,
-    DOUBLE,
-    CHARACTER,
-    STRING,
-    BOOLEAN,
-    UNDEFINED,;
+
+    INTEGER(4),
+    DOUBLE(8),
+    CHARACTER(1),
+    STRING(20),
+    BOOLEAN(1),
+    UNDEFINED(null),;
+
+    private Integer byteCount;
+
+    DataType(Integer byteCount) {
+        this.byteCount = byteCount;
+    }
 
     public static DataType getDataType(Type type) {
         if(null != type) {
@@ -30,5 +37,9 @@ public enum DataType {
 
     public static Type[] getDataTypeOperators() {
         return new Type[] { Type.INTEGER, Type.DOUBLE, Type.CHARACTER, Type.STRING, Type.BOOLEAN};
+    }
+
+    public Integer getByteCount() {
+        return this.byteCount;
     }
 }

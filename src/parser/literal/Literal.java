@@ -1,7 +1,7 @@
 package parser.literal;
 
 import core.Token;
-import parser.BinaryExpressionType;
+import parser.ExpressionType;
 import parser.RhsExpression;
 
 public abstract class Literal<T> implements RhsExpression {
@@ -29,8 +29,8 @@ public abstract class Literal<T> implements RhsExpression {
     }
 
     @Override
-    public BinaryExpressionType getExpressionType() {
-        return BinaryExpressionType.LITERAL;
+    public ExpressionType getExpressionType() {
+        return ExpressionType.LITERAL;
     }
 
 }

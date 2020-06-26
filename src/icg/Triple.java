@@ -1,4 +1,4 @@
-package intermediateCodeGenerator;
+package icg;
 
 public class Triple {
     private String operator;
@@ -8,6 +8,11 @@ public class Triple {
         this.operator = operator;
         this.arg1 = arg1;
         this.arg2 = arg2;
+    }
+
+    public Triple(String operator, String arg1) {
+        this.operator = operator;
+        this.arg1 = arg1;
     }
 
     public String getOperator() {

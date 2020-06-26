@@ -16,4 +16,5 @@ public class CharacterLiteral extends Literal<Character> {
     public Character getValue() {
         return this.value;
     }
+
 }

@@ -3,6 +3,7 @@ package parser;
 import java.util.*;
 
 public class ParseException extends Exception {
+
     private boolean isList = false;
 
     private Set<String> errorMessages;

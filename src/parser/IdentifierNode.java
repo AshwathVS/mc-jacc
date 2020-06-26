@@ -28,7 +28,7 @@ public class IdentifierNode implements RhsExpression {
     }
 
     @Override
-    public BinaryExpressionType getExpressionType() {
-        return BinaryExpressionType.IDENTIFIER;
+    public ExpressionType getExpressionType() {
+        return ExpressionType.IDENTIFIER;
     }
 }

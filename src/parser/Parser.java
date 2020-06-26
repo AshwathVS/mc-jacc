@@ -190,18 +190,18 @@ public class Parser {
             // if there is no relational operator, left should be a boolean literal or a function call returning boolean or a boolean identifier
             boolean validBooleanExp = false;
             RhsExpression left = rLeft.getLeft();
-            BinaryExpressionType type = left.getExpressionType();
-            if(BinaryExpressionType.LITERAL.equals(type)) {
+            ExpressionType type = left.getExpressionType();
+            if(ExpressionType.LITERAL.equals(type)) {
                 if(LiteralType.BOOLEAN_LITERAL.equals(((Literal) left).getLiteralType())) {
                     validBooleanExp = true;
                 }
-            } else if(BinaryExpressionType.FUNCTION_CALL.equals(type)) {
+            } else if(ExpressionType.FUNCTION_CALL.equals(type)) {
                 FunctionCall functionCall = (FunctionCall) left;
                 FunctionSymbolTableEntry functionDeclaration = symbolTable.getFunction(functionCall.getFunctionName(), functionCall.getArguments().size()).value;
                 if(functionDeclaration.getReturnType().equals(DataType.BOOLEAN)) {
                     validBooleanExp = true;
                 }
-            } else if(BinaryExpressionType.IDENTIFIER.equals(type)) {
+            } else if(ExpressionType.IDENTIFIER.equals(type)) {
                 IdentifierNode identifierNode = (IdentifierNode) left;
                 if(DataType.BOOLEAN.equals(identifierNode.getDataType())) {
                     validBooleanExp = true;
@@ -302,7 +302,7 @@ public class Parser {
         }
 
         if(isSignedFactorFound) {
-            returnExp.setOperator(ArithmeticOperator.getOperatorFromType(sign.getType()));
+            returnExp = new BinaryExpression(returnExp, null, ArithmeticOperator.getOperatorFromType(sign.getType()));
         }
         return returnExp;
     }

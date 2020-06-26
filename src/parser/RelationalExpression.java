@@ -26,7 +26,7 @@ public class RelationalExpression extends BooleanExpression implements RhsExpres
     }
 
     @Override
-    public BinaryExpressionType getExpressionType() {
-        return BinaryExpressionType.RELATIONAL_EXPRESSION;
+    public ExpressionType getExpressionType() {
+        return ExpressionType.RELATIONAL_EXPRESSION;
     }
 }

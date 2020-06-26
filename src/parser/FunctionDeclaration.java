@@ -16,7 +16,7 @@ public class FunctionDeclaration extends SymbolTable {
         super(symbolTable);
         this.functionName = functionName;
         this.returnType = returnType;
-        this.arguments = new HashMap<>(10);
+        this.arguments = new TreeMap<>();
     }
 
     public String getFunctionName() {

@@ -16,4 +16,5 @@ public class DoubleLiteral extends Literal<Double> {
     public Double getValue() {
         return this.value;
     }
+
 }

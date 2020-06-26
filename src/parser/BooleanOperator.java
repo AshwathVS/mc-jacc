@@ -6,20 +6,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum BooleanOperator {
-    NULL(Integer.MAX_VALUE, null),
-    NOT(1, Type.NOT),
-    AND(2, Type.AND),
-    OR(3, Type.OR),;
+    NULL(Integer.MAX_VALUE, null, null),
+    NOT(1, Type.NOT, "!"),
+    AND(2, Type.AND, "&&"),
+    OR(3, Type.OR, "||"),;
 
     private int precedence;
 
     private Type type;
 
+    private String value;
+
     private static Map<Type, BooleanOperator> operatorPrecedenceMap;
 
-    BooleanOperator(int precedence, Type type) {
+    BooleanOperator(int precedence, Type type, String value) {
         this.precedence = precedence;
         this.type = type;
+        this.value = value;
     }
 
     public int getPrecedence() {
@@ -28,6 +31,10 @@ public enum BooleanOperator {
 
     public Type getType() {
         return type;
+    }
+
+    public String value() {
+        return this.value;
     }
 
     public static Type[] getTypes() {

@@ -31,7 +31,7 @@ public class BinaryExpression implements RhsExpression, TreeExpression<RhsExpres
     }
 
     @Override
-    public BinaryExpressionType getExpressionType() {
-        return BinaryExpressionType.BINARY_EXPRESSION;
+    public ExpressionType getExpressionType() {
+        return ExpressionType.BINARY_EXPRESSION;
     }
 }

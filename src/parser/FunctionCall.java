@@ -4,7 +4,7 @@ import java.util.List;
 
 public class FunctionCall implements BaseStatement, RhsExpression {
     private String functionName;
-    List<BinaryExpression> arguments;
+    private List<BinaryExpression> arguments;
 
     public FunctionCall(String functionName, List<BinaryExpression> arguments) {
         this.functionName = functionName;
@@ -25,7 +25,7 @@ public class FunctionCall implements BaseStatement, RhsExpression {
     }
 
     @Override
-    public BinaryExpressionType getExpressionType() {
-        return BinaryExpressionType.FUNCTION_CALL;
+    public ExpressionType getExpressionType() {
+        return ExpressionType.FUNCTION_CALL;
     }
 }
